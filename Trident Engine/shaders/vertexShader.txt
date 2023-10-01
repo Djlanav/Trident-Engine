@@ -1,0 +1,15 @@
+#version 450 core
+
+layout (location = 0) in vec3 positions;
+layout (location = 1) in vec3 colors;
+layout (location = 2) in vec2 texCoords;
+
+out vec4 output_color;
+out vec2 outTexCoords;
+
+void main()
+{
+   gl_Position = vec4(positions, 1.0);
+   output_color = vec4(colors, 1.0);
+   outTexCoords = texCoords;
+}

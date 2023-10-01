@@ -1,0 +1,14 @@
+#version 450 core
+
+in vec4 output_color;
+in vec2 outTexCoords;
+
+out vec4 final_color;
+
+uniform vec4 uniform_color;
+uniform sampler2D textureSampler;
+
+void main()
+{
+   final_color = texture(textureSampler, outTexCoords) * uniform_color;
+}
