@@ -14,7 +14,7 @@ public:
 
 	virtual void CreateUIFrame() = 0;
 
-	virtual void Render(const String& Name) = 0;
+	virtual void Render(const String& Name, GLFWwindow* window) = 0;
 
 	virtual void CleanUpUI() = 0;
 };
@@ -33,7 +33,7 @@ public:
 	void AddFloatUIElement(const String& Name, float* Element);
 	void AddIntegerUIElement(const String& Name, uint32* Element);
 
-	void Render(const String& Name) override;
+	void Render(const String& Name, GLFWwindow* window) override;
 
 	void CleanUpUI() override;
 
@@ -42,6 +42,9 @@ public:
 
 	void SetFloatUIElements(FPMap* Map);
 	void SetUnsignedUIElements(UIPMap* Map);
+
+private:
+	String OpenFileDialog(GLFWwindow* window);
 };
 
 // ** Normal Functions**

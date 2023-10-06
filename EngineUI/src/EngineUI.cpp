@@ -1,17 +1,22 @@
 // EngineUI.cpp : Defines the exported functions for the DLL.
 //
 
+#define GLFW_EXPOSE_NATIVE_WIN32
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
 #include "GLFW/glfw3.h"
+#include "GLFW/glfw3native.h"
 
+#include <iostream>
 #include <windows.h>
 #include <string>
 #include <cstdint>
 #include <unordered_map>
 #include <vector>
+#include <Windows.h>
 
 #include "Core/Typedefs.h"
 #include "Core/MainEngineUI.h"
@@ -68,13 +73,43 @@ void CEngineUI::AddIntegerUIElement(const String& Name, uint32* Element)
 	UnsignedIntegerUIElements->insert({ Name, Element });
 }
 
-void CEngineUI::Render(const String& Name)
+String CEngineUI::OpenFileDialog(GLFWwindow* window)
+{
+	OPENFILENAMEA ofn;
+	auto* ofnptr = &ofn;
+	CHAR szFile[260] = { 0 };
+
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = glfwGetWin32Window(window);
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile) / sizeof(CHAR);
+	ofn.lpstrFilter = "Image Files (*.bmp;*.jpg;*.png;*.gif)\0*.bmp;*.jpg;*.png;*.gif\0All Files (*.*)\0*.*\0";
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+	if (GetOpenFileNameA(&ofn) == TRUE)
+	{
+		return ofn.lpstrFile;
+	}
+	
+	return String();
+}
+
+void CEngineUI::Render(const String& Name, GLFWwindow* window)
 {
 	ImGui::Begin(Name.c_str());
 
-	ImGui::Text("TESTING");
+	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 	
 	ImGui::ColorEdit4("Quad Color", FloatUIElements->at("Color"));
+	if (ImGui::Button("Click me!"))
+	{
+		std::cout << OpenFileDialog(window) << "\n";
+	}
 
 	ImGui::End();
 	ImGui::Render();

@@ -1,6 +1,8 @@
 #pragma once
 
 // ** Forward Declarations **
+class CModule;
+class CSubModule;
 class CLoader;
 class CShader;
 class CShaderProgram;
@@ -18,10 +20,10 @@ class CRenderer
 private:
 	bool isWireframeEnabled;
 
-	CLoader Loader;
-	CShaderProgram ShaderProgram;
+	CLoader* Loader;
+	CShaderProgram* ShaderProgram;
 
-	CTextureLoader TextureLoader;
+	CTextureLoader* TextureLoader;
 	CBufferedReader BufferedReader;
 
 	SMeshData* MeshData;
@@ -35,7 +37,7 @@ private:
 	CShader FragmentShader;
 
 public:
-	CRenderer(CDisplay* Display);
+	CRenderer(CDisplay* Display, CLoader* Loader);
 
 	void ClearScreen();
 
@@ -49,5 +51,7 @@ public:
 	void SetIsWireframeEnabled(bool Value);
 
 	CShaderProgram* GetShaderProgram();
+	CLoader* GetLoader();
+	CShader* GetShader(uint32 GLBasedShader);
 	SMeshData* GetMeshData();
 };

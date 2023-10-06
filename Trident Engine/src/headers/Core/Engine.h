@@ -4,19 +4,25 @@ class CMesh;
 class CRenderer;
 class CDisplay;
 class CLoader;
+class CShaderProgram;
+
+#include "Core/UIDataContainer.h"
 
 class CEngine
 {
 private:
 	CRenderer* EngineRenderer;
 	CDisplay* EngineDisplay;
-	CLoader* EngineLoader;
 	CMesh* EngineMesh;
+	CShaderProgram* EngineShaderProgram;
+	CLoader* EngineLoader;
+
+	TUIDataContainer<float*> FloatPointerContainer;
 
 private:
-	void ProccessInput();
+	void ProccessInput(GLFWwindow* Window);
 	void GetFunctionPointers();
-	void InitializeCoreModules(CRenderer* Renderer, CDisplay* Display, CLoader* Loader);
+	void InitializeCoreModules(CRenderer* Renderer, CDisplay* Display);
 
 public:
 	HINSTANCE UIDLL;
@@ -33,7 +39,11 @@ public:
 	AddUnsignedIntElementsFn addIntegerElements;
 
 public:
-	void InitCore(CRenderer* Renderer, CDisplay* Display, CLoader* Loader);
+	void InitCore(CRenderer* Renderer, CDisplay* Display);
 	void Update(CEngineUI* UI);
-	void Close();
+	void Close(CEngineUI* UI);
+
+	void MakeUIFloats(CEngineUI* UI);
+
+	TUIDataContainer<float*>* GetFloatPointerContainer();
 };

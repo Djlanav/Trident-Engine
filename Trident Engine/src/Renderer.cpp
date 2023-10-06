@@ -1,7 +1,3 @@
-#include "Plugins/imgui/imgui.h"
-#include "Plugins/imgui/imgui_impl_glfw.h"
-#include "Plugins/imgui/imgui_impl_opengl3.h"
-
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -22,10 +18,10 @@
 #include "Core/MainEngineUI.h"
 #include "Core/Rendering.h"
 
-CRenderer::CRenderer(CDisplay* Display)
-	: ShaderProgram(), TextureLoader(), BufferedReader()
+CRenderer::CRenderer(CDisplay* Display, CLoader* Loader)
 {
 	this->Display = Display;
+	this->Loader = Loader;
 }
 
 void CRenderer::ClearScreen()
@@ -65,14 +61,14 @@ void CRenderer::InitializeShaders()
 	FragmentShaderCode = BufferedReader.WriteToBuffer("shaders/fragmentShader.txt");
 	FragmentShader.InitShader(GL_FRAGMENT_SHADER, FragmentShaderCode);
 
-	ShaderProgram.SetShaders(&VertexShader, &FragmentShader);
-	ShaderProgram.CreateShaderProgram();
+	ShaderProgram->SetShaders(&VertexShader, &FragmentShader);
+	ShaderProgram->CreateShaderProgram();
 }
 
 void CRenderer::InitializeTextures()
 {
-	TextureLoader.LoadTextureData("res/grass.png", 256, 256, 3);
-	TextureLoader.InitializeTexture(0);
+	TextureLoader->LoadTextureData("res/grass.png", 256, 256, 3);
+	TextureLoader->InitializeTexture(0);
 }
 
 void CRenderer::Render(CMesh* mesh)
@@ -109,10 +105,27 @@ void CRenderer::SetIsWireframeEnabled(bool Value)
 
 CShaderProgram* CRenderer::GetShaderProgram()
 {
-	return &ShaderProgram;
+	return ShaderProgram;
 }
 
 SMeshData* CRenderer::GetMeshData()
 {
 	return MeshData;
+}
+
+CLoader* CRenderer::GetLoader()
+{
+	return Loader;
+}
+
+CShader* CRenderer::GetShader(uint32 GLBasedShader)
+{
+	if (GLBasedShader == GL_VERTEX_SHADER)
+	{
+		return &VertexShader;
+	}
+	else if (GLBasedShader == GL_FRAGMENT_SHADER)
+	{
+		return &FragmentShader;
+	}
 }

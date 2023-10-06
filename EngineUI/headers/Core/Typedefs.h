@@ -9,6 +9,7 @@ typedef std::vector<int> IVector;
 typedef std::vector<uint32_t> UI32Vector;
 
 typedef std::string String;
+typedef std::vector<String> SVector;
 
 typedef uint8_t uint8;
 typedef uint16_t uint16;

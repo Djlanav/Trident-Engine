@@ -145,20 +145,12 @@
     <ClInclude Include="src\headers\Core\Shader.h" />
     <ClInclude Include="src\headers\Core\Texturing.h" />
     <ClInclude Include="src\headers\Core\Typedefs.h" />
+    <ClInclude Include="src\headers\Core\UIDataContainer.h" />
     <ClInclude Include="src\headers\glad\glad.h" />
     <ClInclude Include="src\headers\GLFW\glfw3.h" />
     <ClInclude Include="src\headers\GLFW\glfw3native.h" />
     <ClInclude Include="src\headers\KHR\khrplatform.h" />
     <ClInclude Include="src\headers\Plugins\color.hpp" />
-    <ClInclude Include="src\headers\Plugins\imgui\imconfig.h" />
-    <ClInclude Include="src\headers\Plugins\imgui\imgui.h" />
-    <ClInclude Include="src\headers\Plugins\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="src\headers\Plugins\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="src\headers\Plugins\imgui\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="src\headers\Plugins\imgui\imgui_internal.h" />
-    <ClInclude Include="src\headers\Plugins\imgui\imstb_rectpack.h" />
-    <ClInclude Include="src\headers\Plugins\imgui\imstb_textedit.h" />
-    <ClInclude Include="src\headers\Plugins\imgui\imstb_truetype.h" />
     <ClInclude Include="src\headers\Plugins\Logger.h" />
     <ClInclude Include="src\headers\Plugins\stb_image.h" />
   </ItemGroup>
@@ -167,13 +159,6 @@
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\FileIO.cpp" />
     <ClCompile Include="src\glad.c" />
-    <ClCompile Include="src\imgui\imgui.cpp" />
-    <ClCompile Include="src\imgui\imgui_demo.cpp" />
-    <ClCompile Include="src\imgui\imgui_draw.cpp" />
-    <ClCompile Include="src\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="src\imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="src\imgui\imgui_tables.cpp" />
-    <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Loader.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />

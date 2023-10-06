@@ -1,7 +1,3 @@
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -24,8 +20,6 @@
 #include "Core/Display.h"
 #include "Core/Rendering.h"
 #include "Core/Engine.h"
-
-#define CHECK_FUNCTION_POINTERS 0
 
 void CEngine::GetFunctionPointers()
 {
@@ -52,82 +46,97 @@ void CEngine::GetFunctionPointers()
 
 	addFloatElements = (AddFloatElementsFn)GetProcAddress(UIDLL, "AddFloatUIElement");
 	addIntegerElements = (AddUnsignedIntElementsFn)GetProcAddress(UIDLL, "AddIntegerUIElement");
-
-#if CHECK_FUNCTION_POINTERS == 1
-	ELogStatus functionPointerStatus = SUCCESS;
-
-	if (createEngineUI == NULL)
-	{
-		functionPointerStatus = FAILURE;
-		CLogger::Log("CreateUI Loading Status:", &functionPointerStatus, nullptr);
-	}
-	else if (getFloatElements == NULL)
-	{
-		functionPointerStatus = FAILURE;
-		CLogger::Log("GetFloatElements Loading Status:", &functionPointerStatus, nullptr);
-	}
-	else if (getUnsignedElements == NULL)
-	{
-		functionPointerStatus = FAILURE;
-		CLogger::Log("GetUnsignedElements Loading Status:", &functionPointerStatus, nullptr);
-	}
-	else if (setFloatElements == NULL)
-	{
-		functionPointerStatus = FAILURE;
-		CLogger::Log("SetFloatElements Loading Status:", &functionPointerStatus, nullptr);
-	}
-	else if (setUnsignedElements == NULL)
-	{
-		functionPointerStatus = FAILURE;
-		CLogger::Log("SetUnsignedElements Loading Status:", &functionPointerStatus, nullptr);
-	}
-	else if (addFloatElements == NULL)
-	{
-		functionPointerStatus = FAILURE;
-		CLogger::Log("AddFloatElements Loading Status:", &functionPointerStatus, nullptr);
-	}
-	else if (addIntegerElements == NULL)
-	{
-		functionPointerStatus = FAILURE;
-		CLogger::Log("AddIntegerElemetns Loading Status:", &functionPointerStatus, nullptr);
-	}
-#else
-	std::cout << "\nFunction Pointer Checking Disabled\n\n";
-#endif
 }
 
-void CEngine::InitializeCoreModules(CRenderer* Renderer, CDisplay* Display, CLoader* Loader)
+void CEngine::InitializeCoreModules(CRenderer* Renderer, CDisplay* Display)
 {
 	EngineRenderer = Renderer;
 	EngineDisplay = Display;
-	EngineLoader = Loader;
+
+	EngineLoader = EngineRenderer->GetLoader();
 }
 
-void CEngine::InitCore(CRenderer* Renderer, CDisplay* Display, CLoader* Loader)
+void CEngine::InitCore(CRenderer* Renderer, CDisplay* Display)
 {
-	InitializeCoreModules(Renderer, Display, Loader);
+	InitializeCoreModules(Renderer, Display);
+	GetFunctionPointers();
 
 	EngineDisplay->CreateDisplay();
 	EngineRenderer->SetIsWireframeEnabled(false);
 	EngineRenderer->InitializeMeshData();
 
-	EngineMesh = EngineLoader->LoadMeshFromVao(EngineRenderer->GetMeshData());
+	EngineMesh = EngineRenderer->GetLoader()->LoadMeshFromVao(EngineRenderer->GetMeshData());
 
 	EngineRenderer->InitializeShaders();
 	EngineRenderer->InitializeTextures();
 }
 
+void CEngine::MakeUIFloats(CEngineUI* UI)
+{
+	UI->InitializeIMGUI(EngineDisplay->GetWindow());
+	setFloatElements(UI, new FPMap);
+
+	float* color = new float[4];
+	color[0] = 0.4f;
+	color[1] = 0.6f;
+	color[2] = 0.3f;
+	color[3] = 1.0f;
+
+	FloatPointerContainer.AddToBuffer("ColorData", color);
+	addFloatElements(UI, "Color", color);
+}
+
+TUIDataContainer<float*>* CEngine::GetFloatPointerContainer()
+{
+	return &FloatPointerContainer;
+}
+
+void CEngine::ProccessInput(GLFWwindow* Window)
+{
+	if (glfwGetKey(Window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(Window, true);
+	}
+	else if (glfwGetKey(Window, GLFW_KEY_R) == GLFW_PRESS)
+	{
+		EngineRenderer->SetIsWireframeEnabled(true);
+	}
+	else if (glfwGetKey(Window, GLFW_KEY_T) == GLFW_PRESS)
+	{
+		EngineRenderer->SetIsWireframeEnabled(false);
+	}
+}
+
 void CEngine::Update(CEngineUI* UI)
 {
-	ProccessInput();
+	float* color = FloatPointerContainer.GetDataFromBuffer("ColorData");
+
+	ProccessInput(EngineDisplay->GetWindow());
 
 	UI->CreateUIFrame();
 	EngineRenderer->ClearScreen();
 
-	EngineRenderer->GetShaderProgram()->StartShaderProgram();
+	EngineShaderProgram->StartShaderProgram();
+	EngineShaderProgram->SetFourVectorUniform("uniform_color",
+			color[0],
+			color[1],
+			color[2],
+			color[3]
+		);
+	
+	EngineRenderer->Render(EngineMesh);
+	UI->Render("WINDOW", EngineDisplay->GetWindow());
+
+	EngineShaderProgram->StopShaderProgram();
 }
 
-void CEngine::Close()
+void CEngine::Close(CEngineUI* UI)
 {
+	EngineRenderer->GetShaderProgram()->CleanShaderProgram();
+	EngineLoader->CleanUp();
+
+	UI->CleanUpUI();
+	delete UI;
+
 	FreeLibrary(UIDLL);
 }
