@@ -73,7 +73,7 @@ void CEngineUI::AddIntegerUIElement(const String& Name, uint32* Element)
 	UnsignedIntegerUIElements->insert({ Name, Element });
 }
 
-String CEngineUI::OpenFileDialog(GLFWwindow* window)
+String* CEngineUI::OpenFileDialog(GLFWwindow* window)
 {
 	OPENFILENAMEA ofn;
 	auto* ofnptr = &ofn;
@@ -93,10 +93,32 @@ String CEngineUI::OpenFileDialog(GLFWwindow* window)
 
 	if (GetOpenFileNameA(&ofn) == TRUE)
 	{
-		return ofn.lpstrFile;
+		String* fileName = nullptr;
+
+		if (FileRetrieved == nullptr)
+		{
+			fileName = new String;
+			*fileName = ofn.lpstrFile;
+			
+			return fileName;
+		}
+		else if (FileRetrieved != nullptr)
+		{
+			delete FileRetrieved;
+
+			fileName = new String;
+			*fileName = ofn.lpstrFile;
+
+			return fileName;
+		}
 	}
 	
-	return String();
+	return nullptr;
+}
+
+String* CEngineUI::GetFileName()
+{
+	return FileRetrieved;
 }
 
 void CEngineUI::Render(const String& Name, GLFWwindow* window)
@@ -106,9 +128,9 @@ void CEngineUI::Render(const String& Name, GLFWwindow* window)
 	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 	
 	ImGui::ColorEdit4("Quad Color", FloatUIElements->at("Color"));
-	if (ImGui::Button("Click me!"))
+	if (ImGui::Button("Select Texture"))
 	{
-		std::cout << OpenFileDialog(window) << "\n";
+		FileRetrieved = OpenFileDialog(window);
 	}
 
 	ImGui::End();
@@ -161,5 +183,10 @@ extern "C"
 	void AddIntegerUIElement(CEngineUI* UI, const String& Name, uint32* Element)
 	{
 		UI->AddIntegerUIElement(Name, Element);
+	}
+
+	String* GetFileDialogResult(CEngineUI* UI)
+	{
+		return UI->GetFileName();
 	}
 }

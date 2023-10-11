@@ -23,8 +23,6 @@ private:
 	uint32 TextureID;
 
 public:
-	CTexture(int32 Width, int32 Height, int32 Channels);
-
 	// ** Getters **
 	String* GetImageName();
 
@@ -35,6 +33,8 @@ public:
 	int32 GetNumberOfChannels();
 
 	uint32 GetTextureID();
+
+	void Make(int32 Width, int32 Height, int32 Channels);
 
 	void SetImageName(const String& Name);
 	void SetImageData(uint8* Data);
@@ -48,12 +48,17 @@ class CTextureLoader
 {
 private:
 	IMGVector Textures;
+	int32 AccessingIndex = 0;
 
 private:
 	void SetTextureParameters(int32 MipMapLevel, int32 OpenGLFormat,
 		int32 ImageWidth, int32 ImageHeight, int32 Border, int32 ImageFormat, uint8* Data);
 
 public:
-	void LoadTextureData(const String& Name, int32 Width, int32 Height, int32 Channels);
+	void LoadTextureData(const String& Name);
 	void InitializeTexture(uint32 Index);
+
+	void IncrementIndex();
+	int32* GetAccessingIndexPointer();
+	int32 GetAccessingIndex();
 };

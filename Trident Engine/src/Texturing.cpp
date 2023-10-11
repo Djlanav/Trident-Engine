@@ -15,7 +15,7 @@
 
 // ** CTexture **
 
-CTexture::CTexture(int32 Width, int32 Height, int32 Channels)
+void CTexture::Make(int32 Width, int32 Height, int32 Channels)
 {
 	TextureWidth = Width;
 	TextureHeight = Height;
@@ -84,18 +84,20 @@ void CTexture::SetTextureID(uint32 NewID)
 
 // ** CTextureLoader **
 
-void CTextureLoader::LoadTextureData(const String& Name, int32 Width, int32 Height, int32 Channels)
+void CTextureLoader::LoadTextureData(const String& Name)
 {
-	CTexture* texture = new CTexture(Width, Height, Channels);
+	CTexture* texture = new CTexture();
 	ELogStatus status;
 
-	int32 w = texture->GetWidth();
-	int32 h = texture->GetHeight();
-	int32 c = texture->GetNumberOfChannels();
+	int32 w;
+	int32 h;
+	int32 c;
 
 	uint8* data = stbi_load(Name.c_str(), &w, &h, &c, 0);
+	texture->Make(w, h, c);
 
 	texture->SetImageData(data);
+	texture->SetImageName(Name);
 	if (texture->GetImageData() == nullptr || data == nullptr)
 	{
 		status = FAILURE;
@@ -130,4 +132,19 @@ void CTextureLoader::InitializeTexture(uint32 Index)
 		0, GL_RGB, texturePointer->GetImageData());
 
 	stbi_image_free(texturePointer->GetImageData());
+}
+
+void CTextureLoader::IncrementIndex()
+{
+	this->AccessingIndex += 1;
+}
+
+int32* CTextureLoader::GetAccessingIndexPointer()
+{
+	return &AccessingIndex;
+}
+
+int32 CTextureLoader::GetAccessingIndex()
+{
+	return this->AccessingIndex;
 }

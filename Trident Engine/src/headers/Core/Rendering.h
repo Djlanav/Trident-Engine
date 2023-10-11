@@ -20,10 +20,12 @@ class CRenderer
 private:
 	bool isWireframeEnabled;
 
-	CLoader* Loader;
-	CShaderProgram* ShaderProgram;
+	CEngineUI* EngineUI;
 
-	CTextureLoader* TextureLoader;
+	CLoader* Loader;
+	CShaderProgram ShaderProgram;
+
+	CTextureLoader TextureLoader;
 	CBufferedReader BufferedReader;
 
 	SMeshData* MeshData;
@@ -45,13 +47,17 @@ public:
 	void InitializeShaders();
 	void InitializeTextures();
 
+	void DynamicTextureLoad(CEngineUI* UI);
+
 	void Render(CMesh* mesh);
 
 	bool GetIsWireframeEnabled();
 	void SetIsWireframeEnabled(bool Value);
+	void SetUI(CEngineUI* UI);
 
 	CShaderProgram* GetShaderProgram();
 	CLoader* GetLoader();
 	CShader* GetShader(uint32 GLBasedShader);
 	SMeshData* GetMeshData();
+	CTextureLoader* GetTextureLoader();
 };

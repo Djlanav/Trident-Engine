@@ -54,6 +54,7 @@ void CEngine::InitializeCoreModules(CRenderer* Renderer, CDisplay* Display)
 	EngineDisplay = Display;
 
 	EngineLoader = EngineRenderer->GetLoader();
+	EngineShaderProgram = EngineRenderer->GetShaderProgram();
 }
 
 void CEngine::InitCore(CRenderer* Renderer, CDisplay* Display)

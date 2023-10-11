@@ -32,6 +32,7 @@ int main()
 
 	CEngineUI* engineUI = TridentEngine.createEngineUI();
 	TridentEngine.MakeUIFloats(engineUI);
+	Renderer.SetUI(engineUI);
 
 	while (!glfwWindowShouldClose(Display.GetWindow()))
 	{

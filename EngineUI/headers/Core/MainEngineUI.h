@@ -24,6 +24,7 @@ class ENGINEUI_API CEngineUI : public CUI
 private:
 	FPMap* FloatUIElements;
 	UIPMap* UnsignedIntegerUIElements;
+	String* FileRetrieved;
 
 public:
 	void InitializeIMGUI(GLFWwindow* window) override;
@@ -43,8 +44,10 @@ public:
 	void SetFloatUIElements(FPMap* Map);
 	void SetUnsignedUIElements(UIPMap* Map);
 
+	String* GetFileName();
+
 private:
-	String OpenFileDialog(GLFWwindow* window);
+	String* OpenFileDialog(GLFWwindow* window);
 };
 
 // ** Normal Functions**
@@ -59,4 +62,6 @@ extern "C"
 
 	ENGINEUI_API void AddFloatUIElement(CEngineUI* UI, const String& Name, float* Element);
 	ENGINEUI_API void AddIntegerUIElement(CEngineUI* UI, const String& Name, uint32* Element);
+
+	ENGINEUI_API String* GetFileDialogResult(CEngineUI* UI);
 }

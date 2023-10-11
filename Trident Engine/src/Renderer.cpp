@@ -19,6 +19,8 @@
 #include "Core/Rendering.h"
 
 CRenderer::CRenderer(CDisplay* Display, CLoader* Loader)
+	: ShaderProgram(), TextureLoader(), VertexShader(), FragmentShader(),
+	FragmentShaderCode(), VertexShaderCode(), MeshData(nullptr), isWireframeEnabled(false)
 {
 	this->Display = Display;
 	this->Loader = Loader;
@@ -61,14 +63,22 @@ void CRenderer::InitializeShaders()
 	FragmentShaderCode = BufferedReader.WriteToBuffer("shaders/fragmentShader.txt");
 	FragmentShader.InitShader(GL_FRAGMENT_SHADER, FragmentShaderCode);
 
-	ShaderProgram->SetShaders(&VertexShader, &FragmentShader);
-	ShaderProgram->CreateShaderProgram();
+	ShaderProgram.SetShaders(&VertexShader, &FragmentShader);
+	ShaderProgram.CreateShaderProgram();
 }
 
 void CRenderer::InitializeTextures()
 {
-	TextureLoader->LoadTextureData("res/grass.png", 256, 256, 3);
-	TextureLoader->InitializeTexture(0);
+	TextureLoader.LoadTextureData("res/grass.png");
+	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
+}
+
+void CRenderer::DynamicTextureLoad(CEngineUI* UI)
+{
+	TextureLoader.LoadTextureData(*GetFileDialogResult(UI));
+	TextureLoader.IncrementIndex();
+
+	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
 }
 
 void CRenderer::Render(CMesh* mesh)
@@ -103,9 +113,14 @@ void CRenderer::SetIsWireframeEnabled(bool Value)
 	isWireframeEnabled = Value;
 }
 
+void CRenderer::SetUI(CEngineUI* UI)
+{
+	this->EngineUI = UI;
+}
+
 CShaderProgram* CRenderer::GetShaderProgram()
 {
-	return ShaderProgram;
+	return &ShaderProgram;
 }
 
 SMeshData* CRenderer::GetMeshData()
@@ -128,4 +143,9 @@ CShader* CRenderer::GetShader(uint32 GLBasedShader)
 	{
 		return &FragmentShader;
 	}
+}
+
+CTextureLoader* CRenderer::GetTextureLoader()
+{
+	return &TextureLoader;
 }
