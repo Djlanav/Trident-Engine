@@ -141,6 +141,7 @@
     <ClInclude Include="src\headers\Core\FileIO.h" />
     <ClInclude Include="src\headers\Core\Loader.h" />
     <ClInclude Include="src\headers\Core\Mesh.h" />
+    <ClInclude Include="src\headers\Core\Module.h" />
     <ClInclude Include="src\headers\Core\Rendering.h" />
     <ClInclude Include="src\headers\Core\Shader.h" />
     <ClInclude Include="src\headers\Core\Texturing.h" />
@@ -163,6 +164,7 @@
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\Module.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Texturing.cpp" />

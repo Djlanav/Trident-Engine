@@ -1,5 +1,6 @@
 #pragma once
 
+class CModule;
 class CMesh;
 class CRenderer;
 class CDisplay;
@@ -8,7 +9,7 @@ class CShaderProgram;
 
 #include "Core/UIDataContainer.h"
 
-class CEngine
+class CEngine : public CModule
 {
 private:
 	CRenderer* EngineRenderer;

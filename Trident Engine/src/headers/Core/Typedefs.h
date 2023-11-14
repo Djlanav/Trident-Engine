@@ -1,22 +1,24 @@
 #pragma once
+#include <cstdint>
+#include <vector>
+#include <unordered_map>
+#include <string>
 
-typedef const void* const_voidptr;
+using const_voidptr = const void*;
+using FVector = std::vector<float>;
+using IVector = std::vector<int>;
+using UI32Vector = std::vector<uint32_t>;
 
-typedef std::vector<float> FVector;
-typedef std::vector<int> IVector;
-typedef std::vector<uint32_t> UI32Vector;
+using String = std::string;
+using SVector = std::vector<String>;
+using uint8 = uint8_t;
+using uint16 = uint16_t;
+using uint32 = uint32_t;
+using uint64 = uint64_t;
 
-typedef std::string String;
-typedef std::vector<String> SVector;
+using int8 = int8_t;
+using int16 = int16_t;
+using int32 = int32_t;
+using int64 = int64_t;
 
-typedef uint8_t uint8;
-typedef uint16_t uint16;
-typedef uint32_t uint32;
-typedef uint64_t uint64;
-
-typedef int8_t int8;
-typedef int16_t int16;
-typedef int32_t int32;
-typedef int64_t int64;
-
-typedef std::unordered_map<String, int32> I32HashMap;
+using I32HashMap = std::unordered_map<String, int32>;

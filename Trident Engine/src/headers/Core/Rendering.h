@@ -1,6 +1,7 @@
 #pragma once
 
 // ** Forward Declarations **
+class CEngine;
 class CModule;
 class CSubModule;
 class CLoader;
@@ -15,8 +16,20 @@ class CDisplay;
 struct SMeshData;
 // ** End **
 
-class CRenderer
+#include <Windows.h>
+
+// ** Function Pointer **
+typedef String* (*GetFDResult)(CEngineUI* UI);
+
+// ** Using **
+using HINSTMap = std::unordered_map<String, HINSTANCE*>;
+
+class CRenderer : public CModule
 {
+private:
+	HINSTMap DLLMap;
+	SVector DLLNameVector;
+
 private:
 	bool isWireframeEnabled;
 
@@ -38,6 +51,9 @@ private:
 	CShader VertexShader;
 	CShader FragmentShader;
 
+private:
+	GetFDResult getFDResult;
+
 public:
 	CRenderer(CDisplay* Display, CLoader* Loader);
 
@@ -46,6 +62,10 @@ public:
 	void InitializeMeshData();
 	void InitializeShaders();
 	void InitializeTextures();
+
+	void GetFunctionPointers();
+	void GetDLLPtr(const String& Name, HINSTANCE* DLLPTR);
+	void LoadDLLs();
 
 	void DynamicTextureLoad(CEngineUI* UI);
 

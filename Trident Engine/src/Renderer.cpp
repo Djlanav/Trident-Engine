@@ -16,6 +16,8 @@
 #include "Plugins/Logger.h"
 #include "Core/Display.h"
 #include "Core/MainEngineUI.h"
+#include "Core/Module.h"
+#include <Core/Engine.h>
 #include "Core/Rendering.h"
 
 CRenderer::CRenderer(CDisplay* Display, CLoader* Loader)
@@ -24,6 +26,25 @@ CRenderer::CRenderer(CDisplay* Display, CLoader* Loader)
 {
 	this->Display = Display;
 	this->Loader = Loader;
+}
+
+void CRenderer::GetDLLPtr(const String& Name, HINSTANCE* DLLPTR)
+{
+	DLLMap.insert({ Name, DLLPTR });
+	DLLNameVector.push_back(Name);
+}
+
+void CRenderer::LoadDLLs()
+{
+	for (String name : DLLNameVector)
+	{
+		
+	}
+}
+
+void CRenderer::GetFunctionPointers()
+{
+	
 }
 
 void CRenderer::ClearScreen()
@@ -67,12 +88,14 @@ void CRenderer::InitializeShaders()
 	ShaderProgram.CreateShaderProgram();
 }
 
+// Load initial textures at start
 void CRenderer::InitializeTextures()
 {
 	TextureLoader.LoadTextureData("res/grass.png");
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
 }
 
+// Load a texture during runtime
 void CRenderer::DynamicTextureLoad(CEngineUI* UI)
 {
 	TextureLoader.LoadTextureData(*GetFileDialogResult(UI));
