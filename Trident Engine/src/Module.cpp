@@ -8,10 +8,10 @@
 #include "Core/Module.h"
 #include "Plugins/Logger.h"
 
-void CModule::GetDLL(const WString& Name, HINSTANCE* DLL)
+void CModule::GetDLL(const String& FileName, const WString& RefName, HINSTANCE* DLL)
 {
-	DLLMap->insert({ Name, DLL });
-	DLLNameVector.push_back(Name);
+	DLLMap->insert({ RefName, DLL });
+	DLLNameVector.push_back(RefName);
 }
 
 void CModule::LoadDLLs()
@@ -26,7 +26,12 @@ void CModule::LoadDLLs()
 		if (*DLLMap->at(DLLNameVector.at(i)) == NULL)
 		{
 			loadStatus = FAILURE;
-			CLogger::Log("FAILED TO LOAD DLL:", &loadStatus, nullptr);
+			CLogger::Log("FAILED TO LOAD DLL! STATUS:", &loadStatus, nullptr);
 		}
 	}
+}
+
+void CModule::FreeDLL(const String& Name)
+{
+
 }

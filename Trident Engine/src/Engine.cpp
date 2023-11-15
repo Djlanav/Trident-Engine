@@ -24,29 +24,19 @@
 
 void CEngine::GetFunctionPointers()
 {
-	UIDLL = LoadLibrary(TEXT("EngineUI.dll"));
-	ELogStatus uiDllStatus;
+	GetDLL("Editor UI", L"EngineUI.dll", &UIDLL);
+	LoadDLLs();
 
-	if (UIDLL == NULL)
-	{
-		std::exit(-1);
-	}
-	else
-	{
-		uiDllStatus = SUCCESS;
-		CLogger::Log("UI DLL Status:", &uiDllStatus, nullptr);
-	}
+	// createEngineUI = (CreateObjectFn)GetProcAddress(UIDLL, "createUI");
 
-	createEngineUI = (CreateObjectFn)GetProcAddress(UIDLL, "createUI");
+	// getFloatElements = (GetFPMapFn)GetProcAddress(UIDLL, "GetFloatUIElements");
+	// getUnsignedElements = (GetUIPMapFn)GetProcAddress(UIDLL, "GetUnsignedUIElements");
 
-	getFloatElements = (GetFPMapFn)GetProcAddress(UIDLL, "GetFloatUIElements");
-	getUnsignedElements = (GetUIPMapFn)GetProcAddress(UIDLL, "GetUnsignedUIElements");
-
-	setFloatElements = (SetFPMapFn)GetProcAddress(UIDLL, "SetFloatUIElements");
-	setUnsignedElements = (SetUIPMapFn)GetProcAddress(UIDLL, "SetUnsignedUIElements");
+	// setFloatElements = (SetFPMapFn)GetProcAddress(UIDLL, "SetFloatUIElements");
+	// setUnsignedElements = (SetUIPMapFn)GetProcAddress(UIDLL, "SetUnsignedUIElements");
 
 	addFloatElements = (AddFloatElementsFn)GetProcAddress(UIDLL, "AddFloatUIElement");
-	addIntegerElements = (AddUnsignedIntElementsFn)GetProcAddress(UIDLL, "AddIntegerUIElement");
+	// addIntegerElements = (AddUnsignedIntElementsFn)GetProcAddress(UIDLL, "AddIntegerUIElement");
 }
 
 void CEngine::InitializeCoreModules(CRenderer* Renderer, CDisplay* Display)

@@ -25,8 +25,10 @@ private:
 	void GetFunctionPointers();
 	void InitializeCoreModules(CRenderer* Renderer, CDisplay* Display);
 
-public:
+private:
 	HINSTANCE UIDLL;
+
+public:
 
 	CreateObjectFn createEngineUI;
 
