@@ -37,6 +37,9 @@ void CEngine::GetFunctionPointers()
 
 	addFloatElements = (AddFloatElementsFn)GetProcAddress(UIDLL, "AddFloatUIElement");
 	// addIntegerElements = (AddUnsignedIntElementsFn)GetProcAddress(UIDLL, "AddIntegerUIElement");
+
+	// ** TEST
+	FreeDLL("Editor UI");
 }
 
 void CEngine::InitializeCoreModules(CRenderer* Renderer, CDisplay* Display)

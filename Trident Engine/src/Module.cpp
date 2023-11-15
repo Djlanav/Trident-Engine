@@ -8,10 +8,14 @@
 #include "Core/Module.h"
 #include "Plugins/Logger.h"
 
-void CModule::GetDLL(const String& FileName, const WString& RefName, HINSTANCE* DLL)
+// Note to self: The string used to refer to the dll by file name (i.e. EngineUI.dll) must always be a WString.
+
+void CModule::GetDLL(const String& RefName, const WString& FileName, HINSTANCE* DLL)
 {
-	DLLMap->insert({ RefName, DLL });
-	DLLNameVector.push_back(RefName);
+	DLLNameRefs->insert({ RefName, FileName });
+	DLLMap->insert({ FileName, DLL });
+
+	DLLNameVector.push_back(FileName);
 }
 
 void CModule::LoadDLLs()
@@ -33,5 +37,13 @@ void CModule::LoadDLLs()
 
 void CModule::FreeDLL(const String& Name)
 {
+	FreeLibrary(*DLLMap->at(DLLNameRefs->at(Name)));
+}
 
+void CModule::FreeAll()
+{
+	for (auto& name : *DLLNameRefs)
+	{
+		FreeLibrary(*DLLMap->at(DLLNameRefs->at(name.first)));
+	}
 }
