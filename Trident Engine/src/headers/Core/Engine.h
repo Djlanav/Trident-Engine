@@ -39,6 +39,7 @@ public:
 	SetUIPMapFn setUnsignedElements;
 
 	AddFloatElementsFn addFloatElements;
+
 	AddUnsignedIntElementsFn addIntegerElements;
 
 public:

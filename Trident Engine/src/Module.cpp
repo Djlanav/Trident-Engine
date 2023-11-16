@@ -35,6 +35,12 @@ void CModule::LoadDLLs()
 	}
 }
 
+HINSTANCE* CModule::GetDLLHandle(const String& RefName)
+{
+	HINSTANCE* handle = DLLMap->at(DLLNameRefs->at(RefName));
+	return handle;
+}
+
 void CModule::FreeDLL(const String& Name)
 {
 	FreeLibrary(*DLLMap->at(DLLNameRefs->at(Name)));

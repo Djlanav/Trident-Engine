@@ -21,6 +21,7 @@ private:
 public:
 	void GetDLL(const String& RefName, const WString& FileName, HINSTANCE* DLL);
 	void LoadDLLs();
+	HINSTANCE* GetDLLHandle(const String& RefName);
 
 	void FreeDLL(const String& Name);
 	void FreeAll();

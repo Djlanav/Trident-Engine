@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <string>
 #include <unordered_map>
+#include <functional>
 #include <Windows.h>
 #include "Core/Typedefs.h"
 #include "Core/Module.h"
@@ -24,22 +25,10 @@
 
 void CEngine::GetFunctionPointers()
 {
-	GetDLL("Editor UI", L"EngineUI.dll", &UIDLL);
+	GetDLL("Editor UI DLL", L"EngineUI.dll", &UIDLL);
 	LoadDLLs();
 
-	// createEngineUI = (CreateObjectFn)GetProcAddress(UIDLL, "createUI");
-
-	// getFloatElements = (GetFPMapFn)GetProcAddress(UIDLL, "GetFloatUIElements");
-	// getUnsignedElements = (GetUIPMapFn)GetProcAddress(UIDLL, "GetUnsignedUIElements");
-
-	// setFloatElements = (SetFPMapFn)GetProcAddress(UIDLL, "SetFloatUIElements");
-	// setUnsignedElements = (SetUIPMapFn)GetProcAddress(UIDLL, "SetUnsignedUIElements");
-
-	addFloatElements = (AddFloatElementsFn)GetProcAddress(UIDLL, "AddFloatUIElement");
-	// addIntegerElements = (AddUnsignedIntElementsFn)GetProcAddress(UIDLL, "AddIntegerUIElement");
-
-	// ** TEST
-	FreeDLL("Editor UI");
+	addFloatElements = (AddFloatElementsFn)GetProcAddress(*GetDLLHandle("Engine UI DLL"), "AddFloatUIElement");
 }
 
 void CEngine::InitializeCoreModules(CRenderer* Renderer, CDisplay* Display)
