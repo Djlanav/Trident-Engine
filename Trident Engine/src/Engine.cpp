@@ -1,14 +1,10 @@
+#include "Core/CommonHeaders.h"
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include <iostream>
-#include <vector>
-#include <cstdint>
-#include <algorithm>
-#include <string>
-#include <unordered_map>
-#include <Windows.h>
 #include "Core/Typedefs.h"
+#include "Core/Module.h"
 #include "Core/Mesh.h"
 #include "Core/Loader.h"
 #include "Core/Shader.h"
@@ -16,36 +12,18 @@
 #include "Core/FileIO.h"
 #include "Plugins/Logger.h"
 #include "Core/MainEngineUI.h"
-#include "Core/EngineUI/EngineUIFunctionPointers.h"
 #include "Core/Display.h"
 #include "Core/Rendering.h"
 #include "Core/Engine.h"
 
 void CEngine::GetFunctionPointers()
 {
-	UIDLL = LoadLibrary(TEXT("EngineUI.dll"));
-	ELogStatus uiDllStatus;
+	GetDLL("Editor UI DLL", L"EngineUI.dll", UIDLL);
+	LoadDLLs();
 
-	if (UIDLL == NULL)
-	{
-		std::exit(-1);
-	}
-	else
-	{
-		uiDllStatus = SUCCESS;
-		CLogger::Log("UI DLL Status:", &uiDllStatus, nullptr);
-	}
-
-	createEngineUI = (CreateObjectFn)GetProcAddress(UIDLL, "createUI");
-
-	getFloatElements = (GetFPMapFn)GetProcAddress(UIDLL, "GetFloatUIElements");
-	getUnsignedElements = (GetUIPMapFn)GetProcAddress(UIDLL, "GetUnsignedUIElements");
-
-	setFloatElements = (SetFPMapFn)GetProcAddress(UIDLL, "SetFloatUIElements");
-	setUnsignedElements = (SetUIPMapFn)GetProcAddress(UIDLL, "SetUnsignedUIElements");
-
-	addFloatElements = (AddFloatElementsFn)GetProcAddress(UIDLL, "AddFloatUIElement");
-	addIntegerElements = (AddUnsignedIntElementsFn)GetProcAddress(UIDLL, "AddIntegerUIElement");
+	addFloatElements = (func_ptr_three_A)GetProcAddress(*GetDLLHandle("Editor UI DLL"), "AddFloatUIElement");
+	setFloatElements = (func_ptr_two_A)GetProcAddress(*GetDLLHandle("Editor UI DLL"), "SetFloatUIElements");
+	createEngineUI = (func_ptr_empty_ui_ret)GetProcAddress(*GetDLLHandle("Editor UI DLL"), "createUI");
 }
 
 void CEngine::InitializeCoreModules(CRenderer* Renderer, CDisplay* Display)

@@ -1,5 +1,6 @@
 #pragma once
 
+class CModule;
 class CMesh;
 class CRenderer;
 class CDisplay;
@@ -8,7 +9,14 @@ class CShaderProgram;
 
 #include "Core/UIDataContainer.h"
 
-class CEngine
+// ** Function Pointers **
+typedef void (*func_ptr_three_A)(CEngineUI*, const String&, float*);
+typedef void (*func_ptr_two_A)(CEngineUI* UI, FPMap* Map);
+typedef CEngineUI* (*func_ptr_empty_ui_ret)();
+
+// ** Classes **
+
+class CEngine : public CModule
 {
 private:
 	CRenderer* EngineRenderer;
@@ -24,19 +32,12 @@ private:
 	void GetFunctionPointers();
 	void InitializeCoreModules(CRenderer* Renderer, CDisplay* Display);
 
-public:
+private:
 	HINSTANCE UIDLL;
-
-	CreateObjectFn createEngineUI;
-
-	GetFPMapFn getFloatElements;
-	GetUIPMapFn getUnsignedElements;
-
-	SetFPMapFn setFloatElements;
-	SetUIPMapFn setUnsignedElements;
-
-	AddFloatElementsFn addFloatElements;
-	AddUnsignedIntElementsFn addIntegerElements;
+public:
+	func_ptr_empty_ui_ret createEngineUI;
+	func_ptr_two_A setFloatElements;
+	func_ptr_three_A addFloatElements;
 
 public:
 	void InitCore(CRenderer* Renderer, CDisplay* Display);

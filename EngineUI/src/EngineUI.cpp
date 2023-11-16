@@ -11,7 +11,6 @@
 #include "GLFW/glfw3native.h"
 
 #include <iostream>
-#include <windows.h>
 #include <string>
 #include <cstdint>
 #include <unordered_map>

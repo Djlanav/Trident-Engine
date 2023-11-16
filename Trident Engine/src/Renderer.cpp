@@ -1,12 +1,8 @@
+#include "Core/CommonHeaders.h"
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include <iostream>
-#include <vector>
-#include <cstdint>
-#include <algorithm>
-#include <string>
-#include <unordered_map>
 #include "Core/Typedefs.h"
 #include "Core/Mesh.h"
 #include "Core/Loader.h"
@@ -16,6 +12,8 @@
 #include "Plugins/Logger.h"
 #include "Core/Display.h"
 #include "Core/MainEngineUI.h"
+#include "Core/Module.h"
+#include <Core/Engine.h>
 #include "Core/Rendering.h"
 
 CRenderer::CRenderer(CDisplay* Display, CLoader* Loader)
@@ -24,6 +22,11 @@ CRenderer::CRenderer(CDisplay* Display, CLoader* Loader)
 {
 	this->Display = Display;
 	this->Loader = Loader;
+}
+
+void CRenderer::GetFunctionPointers()
+{
+	getFDResult = (func_ptr_one_arg)GetProcAddress(*GetDLLHandle("Engine UI DLL"), "GetFileDialogResult");
 }
 
 void CRenderer::ClearScreen()
@@ -67,15 +70,17 @@ void CRenderer::InitializeShaders()
 	ShaderProgram.CreateShaderProgram();
 }
 
+// Load initial textures at start
 void CRenderer::InitializeTextures()
 {
 	TextureLoader.LoadTextureData("res/grass.png");
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
 }
 
+// Load a texture during runtime
 void CRenderer::DynamicTextureLoad(CEngineUI* UI)
 {
-	TextureLoader.LoadTextureData(*GetFileDialogResult(UI));
+	TextureLoader.LoadTextureData(*getFDResult(UI));
 	TextureLoader.IncrementIndex();
 
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
@@ -142,6 +147,10 @@ CShader* CRenderer::GetShader(uint32 GLBasedShader)
 	else if (GLBasedShader == GL_FRAGMENT_SHADER)
 	{
 		return &FragmentShader;
+	}
+	else
+	{
+		return nullptr;
 	}
 }
 

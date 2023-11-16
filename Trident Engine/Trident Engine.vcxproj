@@ -110,6 +110,8 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src\headers\Plugins\imgui;$(SolutionDir)EngineUI\headers;$(ProjectDir)src\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeaderFile>Core/CommonHeaders.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,12 +137,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\headers\Core\CommonHeaders.h" />
     <ClInclude Include="src\headers\Core\Display.h" />
     <ClInclude Include="src\headers\Core\Engine.h" />
     <ClInclude Include="src\headers\Core\EngineUI\EngineUIFunctionPointers.h" />
     <ClInclude Include="src\headers\Core\FileIO.h" />
     <ClInclude Include="src\headers\Core\Loader.h" />
     <ClInclude Include="src\headers\Core\Mesh.h" />
+    <ClInclude Include="src\headers\Core\Module.h" />
     <ClInclude Include="src\headers\Core\Rendering.h" />
     <ClInclude Include="src\headers\Core\Shader.h" />
     <ClInclude Include="src\headers\Core\Texturing.h" />
@@ -155,14 +159,22 @@
     <ClInclude Include="src\headers\Plugins\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CommonHeaders.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="src\Display.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\FileIO.cpp" />
-    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\glad.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Loader.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\Module.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Texturing.cpp" />

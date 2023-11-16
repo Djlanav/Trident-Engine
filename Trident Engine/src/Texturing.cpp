@@ -1,11 +1,8 @@
-#include <vector>
-#include <cstdint>
-#include <algorithm>
-#include <unordered_map>
-#include <string>
+#include "Core/CommonHeaders.h"
 
 #include "glad/glad.h"
 #include "Core/Typedefs.h"
+#include "Core/Module.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "Plugins/stb_image.h"

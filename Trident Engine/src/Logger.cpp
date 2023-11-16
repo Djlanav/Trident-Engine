@@ -1,9 +1,6 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <cstdint>
-#include <unordered_map>
+#include "Core/CommonHeaders.h"
 #include "Core/Typedefs.h"
+#include "Core/Module.h"
 #include "Plugins/color.hpp"
 #include "Plugins/Logger.h"
 

@@ -1,6 +1,7 @@
 #pragma once
 
 // ** Forward Declarations **
+class CEngine;
 class CModule;
 class CSubModule;
 class CLoader;
@@ -15,8 +16,15 @@ class CDisplay;
 struct SMeshData;
 // ** End **
 
-class CRenderer
+// ** Function Pointer **
+typedef String* (*func_ptr_one_arg)(CEngineUI* UI);
+
+class CRenderer : public CModule
 {
+private:
+	HINSTMap DLLMap;
+	SVector DLLNameVector;
+
 private:
 	bool isWireframeEnabled;
 
@@ -38,6 +46,9 @@ private:
 	CShader VertexShader;
 	CShader FragmentShader;
 
+private:
+	func_ptr_one_arg getFDResult;
+
 public:
 	CRenderer(CDisplay* Display, CLoader* Loader);
 
@@ -46,6 +57,8 @@ public:
 	void InitializeMeshData();
 	void InitializeShaders();
 	void InitializeTextures();
+
+	void GetFunctionPointers();
 
 	void DynamicTextureLoad(CEngineUI* UI);
 
