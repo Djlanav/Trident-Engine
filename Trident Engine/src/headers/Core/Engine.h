@@ -9,6 +9,13 @@ class CShaderProgram;
 
 #include "Core/UIDataContainer.h"
 
+// ** Function Pointers **
+typedef void (*func_ptr_three_A)(CEngineUI*, const String&, float*);
+typedef void (*func_ptr_two_A)(CEngineUI* UI, FPMap* Map);
+typedef CEngineUI* (*func_ptr_empty_ui_ret)();
+
+// ** Classes **
+
 class CEngine : public CModule
 {
 private:
@@ -27,20 +34,10 @@ private:
 
 private:
 	HINSTANCE UIDLL;
-
 public:
-
-	CreateObjectFn createEngineUI;
-
-	GetFPMapFn getFloatElements;
-	GetUIPMapFn getUnsignedElements;
-
-	SetFPMapFn setFloatElements;
-	SetUIPMapFn setUnsignedElements;
-
-	AddFloatElementsFn addFloatElements;
-
-	AddUnsignedIntElementsFn addIntegerElements;
+	func_ptr_empty_ui_ret createEngineUI;
+	func_ptr_two_A setFloatElements;
+	func_ptr_three_A addFloatElements;
 
 public:
 	void InitCore(CRenderer* Renderer, CDisplay* Display);

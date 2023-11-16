@@ -1,14 +1,8 @@
+#include "Core/CommonHeaders.h"
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include <iostream>
-#include <vector>
-#include <cstdint>
-#include <algorithm>
-#include <string>
-#include <unordered_map>
-#include <functional>
-#include <Windows.h>
 #include "Core/Typedefs.h"
 #include "Core/Module.h"
 #include "Core/Mesh.h"
@@ -18,17 +12,18 @@
 #include "Core/FileIO.h"
 #include "Plugins/Logger.h"
 #include "Core/MainEngineUI.h"
-#include "Core/EngineUI/EngineUIFunctionPointers.h"
 #include "Core/Display.h"
 #include "Core/Rendering.h"
 #include "Core/Engine.h"
 
 void CEngine::GetFunctionPointers()
 {
-	GetDLL("Editor UI DLL", L"EngineUI.dll", &UIDLL);
+	GetDLL("Editor UI DLL", L"EngineUI.dll", UIDLL);
 	LoadDLLs();
 
-	addFloatElements = (AddFloatElementsFn)GetProcAddress(*GetDLLHandle("Engine UI DLL"), "AddFloatUIElement");
+	addFloatElements = (func_ptr_three_A)GetProcAddress(*GetDLLHandle("Editor UI DLL"), "AddFloatUIElement");
+	setFloatElements = (func_ptr_two_A)GetProcAddress(*GetDLLHandle("Editor UI DLL"), "SetFloatUIElements");
+	createEngineUI = (func_ptr_empty_ui_ret)GetProcAddress(*GetDLLHandle("Editor UI DLL"), "createUI");
 }
 
 void CEngine::InitializeCoreModules(CRenderer* Renderer, CDisplay* Display)

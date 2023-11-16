@@ -16,13 +16,8 @@ class CDisplay;
 struct SMeshData;
 // ** End **
 
-#include <Windows.h>
-
 // ** Function Pointer **
-typedef String* (*GetFDResult)(CEngineUI* UI);
-
-// ** Using **
-using HINSTMap = std::unordered_map<String, HINSTANCE*>;
+typedef String* (*func_ptr_one_arg)(CEngineUI* UI);
 
 class CRenderer : public CModule
 {
@@ -52,7 +47,7 @@ private:
 	CShader FragmentShader;
 
 private:
-	GetFDResult getFDResult;
+	func_ptr_one_arg getFDResult;
 
 public:
 	CRenderer(CDisplay* Display, CLoader* Loader);
@@ -64,8 +59,6 @@ public:
 	void InitializeTextures();
 
 	void GetFunctionPointers();
-	void GetDLLPtr(const String& Name, HINSTANCE* DLLPTR);
-	void LoadDLLs();
 
 	void DynamicTextureLoad(CEngineUI* UI);
 

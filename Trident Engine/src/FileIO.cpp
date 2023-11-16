@@ -1,14 +1,9 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include <iostream>
-#include <vector>
-#include <cstdint>
-#include <algorithm>
-#include <string>
-#include <unordered_map>
-#include <fstream>
+#include "Core/CommonHeaders.h"
 #include "Core/Typedefs.h"
+#include "Core/Module.h"
 #include "Core/Mesh.h"
 #include "Core/Loader.h"
 #include "Core/Shader.h"

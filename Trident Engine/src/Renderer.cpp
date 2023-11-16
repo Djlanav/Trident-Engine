@@ -1,12 +1,8 @@
+#include "Core/CommonHeaders.h"
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include <iostream>
-#include <vector>
-#include <cstdint>
-#include <algorithm>
-#include <string>
-#include <unordered_map>
 #include "Core/Typedefs.h"
 #include "Core/Mesh.h"
 #include "Core/Loader.h"
@@ -28,23 +24,9 @@ CRenderer::CRenderer(CDisplay* Display, CLoader* Loader)
 	this->Loader = Loader;
 }
 
-void CRenderer::GetDLLPtr(const String& Name, HINSTANCE* DLLPTR)
-{
-	DLLMap.insert({ Name, DLLPTR });
-	DLLNameVector.push_back(Name);
-}
-
-void CRenderer::LoadDLLs()
-{
-	for (String name : DLLNameVector)
-	{
-		
-	}
-}
-
 void CRenderer::GetFunctionPointers()
 {
-	
+	getFDResult = (func_ptr_one_arg)GetProcAddress(*GetDLLHandle("Engine UI DLL"), "GetFileDialogResult");
 }
 
 void CRenderer::ClearScreen()
@@ -98,7 +80,7 @@ void CRenderer::InitializeTextures()
 // Load a texture during runtime
 void CRenderer::DynamicTextureLoad(CEngineUI* UI)
 {
-	TextureLoader.LoadTextureData(*GetFileDialogResult(UI));
+	TextureLoader.LoadTextureData(*getFDResult(UI));
 	TextureLoader.IncrementIndex();
 
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
@@ -165,6 +147,10 @@ CShader* CRenderer::GetShader(uint32 GLBasedShader)
 	else if (GLBasedShader == GL_FRAGMENT_SHADER)
 	{
 		return &FragmentShader;
+	}
+	else
+	{
+		return nullptr;
 	}
 }
 

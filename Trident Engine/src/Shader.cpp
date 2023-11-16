@@ -1,10 +1,7 @@
-#include <vector>
-#include <cstdint>
-#include <string>
-#include <iostream>
-#include <unordered_map>
+#include "Core/CommonHeaders.h"
 #include "glad/glad.h"
 #include "Core/Typedefs.h"
+#include "Core/Module.h"
 #include "Core/Shader.h"
 #include "Plugins/Logger.h"
 
