@@ -49,6 +49,11 @@ uint32 CTexture::GetTextureID()
 	return TextureID;
 }
 
+uint32 CTexture::GetFormat()
+{
+	return Format;
+}
+
 void CTexture::SetImageName(const String& Name)
 {
 	sImageName = Name;
@@ -79,6 +84,11 @@ void CTexture::SetTextureID(uint32 NewID)
 	TextureID = NewID;
 }
 
+void CTexture::SetFormat(uint32 Format)
+{
+	this->Format = Format;
+}
+
 // ** CTextureLoader **
 
 void CTextureLoader::LoadTextureData(const String& Name)
@@ -90,11 +100,23 @@ void CTextureLoader::LoadTextureData(const String& Name)
 	int32 h;
 	int32 c;
 
+	stbi_set_flip_vertically_on_load(true);
+
 	uint8* data = stbi_load(Name.c_str(), &w, &h, &c, 0);
 	texture->Make(w, h, c);
 
 	texture->SetImageData(data);
 	texture->SetImageName(Name);
+
+	if (c == 3)
+	{
+		texture->SetFormat(GL_RGB);
+	}
+	else if (c > 3)
+	{
+		texture->SetFormat(GL_RGBA);
+	}
+
 	if (texture->GetImageData() == nullptr || data == nullptr)
 	{
 		status = FAILURE;
@@ -125,8 +147,8 @@ void CTextureLoader::InitializeTexture(uint32 Index)
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
 
-	SetTextureParameters(0, GL_RGB, texturePointer->GetWidth(), texturePointer->GetHeight(),
-		0, GL_RGB, texturePointer->GetImageData());
+	SetTextureParameters(0, texturePointer->GetFormat(), texturePointer->GetWidth(), texturePointer->GetHeight(),
+		0, texturePointer->GetFormat(), texturePointer->GetImageData());
 
 	stbi_image_free(texturePointer->GetImageData());
 }

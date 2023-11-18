@@ -21,12 +21,14 @@ private:
 	uint8* ImageData;
 
 	uint32 TextureID;
+	uint32 Format;
 
 public:
 	// ** Getters **
 	String* GetImageName();
 
 	uint8* GetImageData();
+	uint32 GetFormat();
 
 	int32 GetWidth();
 	int32 GetHeight();
@@ -42,6 +44,7 @@ public:
 	void SetHeight(uint32 NewHeight);
 	void SetChannels(uint32 NewNumber);
 	void SetTextureID(uint32 NewID);
+	void SetFormat(uint32 Format);
 };
 
 class CTextureLoader
