@@ -110,7 +110,8 @@ void CEngine::Update(CEngineUI* UI)
 		);
 	
 	EngineRenderer->Render(EngineMesh);
-	UI->Render("WINDOW", EngineDisplay->GetWindow());
+	EngineRenderer->Interface();
+	UI->Render();
 
 	EngineShaderProgram->StopShaderProgram();
 }

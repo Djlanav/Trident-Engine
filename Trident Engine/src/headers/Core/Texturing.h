@@ -46,8 +46,10 @@ public:
 
 class CTextureLoader
 {
-private:
+public:
 	IMGVector Textures;
+
+private:
 	int32 AccessingIndex = 0;
 
 private:

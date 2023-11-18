@@ -62,6 +62,7 @@ public:
 	void DynamicTextureLoad();
 
 	void Render(CMesh* mesh);
+	void Interface();
 
 	bool GetIsWireframeEnabled();
 	void SetIsWireframeEnabled(bool Value);

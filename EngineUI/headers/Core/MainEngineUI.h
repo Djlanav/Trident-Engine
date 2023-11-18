@@ -18,7 +18,7 @@ public:
 	virtual void InitializeIMGUI(GLFWwindow* window);
 
 	virtual void CreateUIFrame();
-	virtual void Render(const String& Name, GLFWwindow* window);
+	virtual void Render();
 
 	virtual void CleanUpUI();
 
@@ -31,17 +31,16 @@ public:
 	virtual void SetFloatUIElements(FPMap* Map);
 	virtual void SetUnsignedUIElements(UIPMap* Map);
 
+	virtual String* OpenFileDialog(GLFWwindow* window);
+	virtual void SetFileRetrieved(String* retrieved);
 	virtual String* GetFileDialogResult();
 
 public: // ImGUI interfacing
-	virtual void BeginImGUI(const String& WindowName);
+	virtual void UIBegin(const String& WindowName);
 
-	virtual void AddTextIMGUI(const String& Text, ...);
+	virtual bool UIButton(const String& Text);
 
-	virtual void EndImGUI();
-
-private:
-	virtual String* OpenFileDialog(GLFWwindow* window);
+	virtual void UIEnd();
 };
 
 // ** Normal Functions**

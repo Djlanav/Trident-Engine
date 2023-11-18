@@ -110,41 +110,33 @@ String* CEngineUI::OpenFileDialog(GLFWwindow* window)
 	return nullptr;
 }
 
+void CEngineUI::SetFileRetrieved(String* retrieved)
+{
+	this->FileRetrieved = retrieved;
+}
+
 String* CEngineUI::GetFileDialogResult()
 {
 	return FileRetrieved;
 }
 
-void CEngineUI::BeginImGUI(const String& WindowName)
+void CEngineUI::UIBegin(const String& WindowName)
 {
 	ImGui::Begin(WindowName.c_str());
 }
 
-void CEngineUI::EndImGUI()
+bool CEngineUI::UIButton(const String& Text)
+{
+	return ImGui::Button(Text.c_str());
+}
+
+void CEngineUI::UIEnd()
 {
 	ImGui::End();
 }
 
-void CEngineUI::AddTextIMGUI(const String& Text, ...)
+void CEngineUI::Render()
 {
-	va_list args;
-	const char* text_c = Text.c_str();
-	ImGui::Text(text_c, args);
-}
-
-void CEngineUI::Render(const String& Name, GLFWwindow* window)
-{
-	ImGui::Begin(Name.c_str());
-
-	// ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
-	
-	ImGui::ColorEdit4("Quad Color", FloatUIElements->at("Color"));
-	if (ImGui::Button("Select Texture"))
-	{
-		FileRetrieved = OpenFileDialog(window);
-	}
-
-	ImGui::End();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

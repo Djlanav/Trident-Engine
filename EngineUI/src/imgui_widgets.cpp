@@ -258,8 +258,9 @@ void ImGui::TextUnformatted(const char* text, const char* text_end)
     TextEx(text, text_end, ImGuiTextFlags_NoWidthForLargeClippedText);
 }
 
-void ImGui::Text(const char* fmt, va_list args)
+void ImGui::Text(const char* fmt, ...)
 {
+    va_list args;
     va_start(args, fmt);
     TextV(fmt, args);
     va_end(args);

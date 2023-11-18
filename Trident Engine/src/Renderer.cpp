@@ -1,5 +1,9 @@
 #include "Core/CommonHeaders.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -13,7 +17,7 @@
 #include "Core/Display.h"
 #include "Core/MainEngineUI.h"
 #include "Core/Module.h"
-#include <Core/Engine.h>
+#include "Core/Engine.h"
 #include "Core/Rendering.h"
 
 CRenderer::CRenderer(CDisplay* Display, CLoader* Loader)
@@ -80,10 +84,30 @@ void CRenderer::InitializeTextures()
 // Load a texture during runtime
 void CRenderer::DynamicTextureLoad()
 {
+	String* file = &(*EditorUI->OpenFileDialog(Display->GetWindow()));
+	EditorUI->SetFileRetrieved(file);
+
+	uint32 id = TextureLoader.Textures.at(TextureLoader.GetAccessingIndex())->GetTextureID();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDeleteTextures(1, &id);
+
 	TextureLoader.LoadTextureData(*EditorUI->GetFileDialogResult());
 	TextureLoader.IncrementIndex();
 
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
+}
+
+void CRenderer::Interface()
+{
+	EditorUI->UIBegin("Rendering Stuff");
+
+	if (EditorUI->UIButton("Select new texture"))
+	{
+		DynamicTextureLoad();
+	}
+
+	EditorUI->UIEnd();
 }
 
 void CRenderer::Render(CMesh* mesh)
