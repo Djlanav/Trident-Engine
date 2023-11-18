@@ -12,7 +12,6 @@
 #include "Core/FileIO.h"
 #include "Plugins/Logger.h"
 #include "Core/MainEngineUI.h"
-#include "Core/EngineUI/EngineUIFunctionPointers.h"
 #include "Core/Rendering.h"
 #include "Core/Display.h"
 #include "Core/Engine.h"
@@ -26,19 +25,17 @@ int main()
 	CEngine TridentEngine;
 	TridentEngine.InitCore(&Renderer, &Display);
 
-	CEngineUI* engineUI = TridentEngine.createEngineUI();
-	TridentEngine.MakeUIFloats(engineUI);
-	Renderer.SetUI(engineUI);
+	TridentEngine.MakeUIFloats(TridentEngine.GetEditorUIPtr());
 
 	while (!glfwWindowShouldClose(Display.GetWindow()))
 	{
-		TridentEngine.Update(engineUI);
+		TridentEngine.Update(TridentEngine.GetEditorUIPtr());
 
 		glfwSwapBuffers(Display.GetWindow());
 		glfwPollEvents();
 	}
 
-	TridentEngine.Close(engineUI);
+	TridentEngine.Close(TridentEngine.GetEditorUIPtr());
 
 	glfwTerminate();
 	return 0;

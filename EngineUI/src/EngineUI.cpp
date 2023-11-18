@@ -1,6 +1,8 @@
 // EngineUI.cpp : Defines the exported functions for the DLL.
 //
 
+#include "Core/CommonHeaders.h"
+
 #define GLFW_EXPOSE_NATIVE_WIN32
 
 #include "imgui.h"
@@ -9,13 +11,6 @@
 
 #include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
-
-#include <iostream>
-#include <string>
-#include <cstdint>
-#include <unordered_map>
-#include <vector>
-#include <Windows.h>
 
 #include "Core/Typedefs.h"
 #include "Core/MainEngineUI.h"
@@ -115,16 +110,33 @@ String* CEngineUI::OpenFileDialog(GLFWwindow* window)
 	return nullptr;
 }
 
-String* CEngineUI::GetFileName()
+String* CEngineUI::GetFileDialogResult()
 {
 	return FileRetrieved;
+}
+
+void CEngineUI::BeginImGUI(const String& WindowName)
+{
+	ImGui::Begin(WindowName.c_str());
+}
+
+void CEngineUI::EndImGUI()
+{
+	ImGui::End();
+}
+
+void CEngineUI::AddTextIMGUI(const String& Text, ...)
+{
+	va_list args;
+	const char* text_c = Text.c_str();
+	ImGui::Text(text_c, args);
 }
 
 void CEngineUI::Render(const String& Name, GLFWwindow* window)
 {
 	ImGui::Begin(Name.c_str());
 
-	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+	// ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 	
 	ImGui::ColorEdit4("Quad Color", FloatUIElements->at("Color"));
 	if (ImGui::Button("Select Texture"))
@@ -146,46 +158,10 @@ void CEngineUI::CleanUpUI()
 	glfwTerminate();
 }
 
-// ** Normal Functions **
 extern "C"
 {
-	CEngineUI* createUI()
+	ENGINEUI_API CEngineUI* createUI()
 	{
-		return new CEngineUI();
-	}
-
-	FPMap* GetFloatUIElements(CEngineUI* UI)
-	{
-		return UI->GetFloatUIElements();
-	}
-
-	UIPMap* GetUnsignedUIElements(CEngineUI* UI)
-	{
-		return UI->GetUnsignedUIElements();
-	}
-
-	void SetFloatUIElements(CEngineUI* UI, FPMap* Map)
-	{
-		UI->SetFloatUIElements(Map);
-	}
-
-	void SetUnsignedUIElements(CEngineUI* UI, UIPMap* Map)
-	{
-		UI->SetUnsignedUIElements(Map);
-	}
-
-	void AddFloatUIElement(CEngineUI* UI, const String& Name, float* Element)
-	{
-		UI->AddFloatUIElement(Name, Element);
-	}
-
-	void AddIntegerUIElement(CEngineUI* UI, const String& Name, uint32* Element)
-	{
-		UI->AddIntegerUIElement(Name, Element);
-	}
-
-	String* GetFileDialogResult(CEngineUI* UI)
-	{
-		return UI->GetFileName();
+		return new CEngineUI;
 	}
 }

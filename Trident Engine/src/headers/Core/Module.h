@@ -1,16 +1,16 @@
 #pragma once
 
 // ** Unique Using **
-using HINSTMap = std::unordered_map<String, HMODULE>;
 using WSVector = std::vector<std::wstring>;
 using WString = std::wstring;
-using HINSTMap_W = std::unordered_map<WString, HMODULE>;
+using HINSTMap = std::unordered_map<String, HMODULE>;
 
 using HINSTRefNameMap = std::unordered_map<String, WString>; // First is the ordinary name, second is the DLL name (MUST BE WIDE STRING CONTANG WCHAR_T)
+using HINSTMap_W = std::unordered_map<WString, HMODULE>;
 
 class CModule
 {
-private:
+public:
 	static HINSTMap_W DLLMap;
 	static HINSTRefNameMap DLLNameRefs;
 

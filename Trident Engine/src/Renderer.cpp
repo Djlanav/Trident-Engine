@@ -78,9 +78,9 @@ void CRenderer::InitializeTextures()
 }
 
 // Load a texture during runtime
-void CRenderer::DynamicTextureLoad(CEngineUI* UI)
+void CRenderer::DynamicTextureLoad()
 {
-	TextureLoader.LoadTextureData(*getFDResult(UI));
+	TextureLoader.LoadTextureData(*EditorUI->GetFileDialogResult());
 	TextureLoader.IncrementIndex();
 
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
@@ -120,7 +120,7 @@ void CRenderer::SetIsWireframeEnabled(bool Value)
 
 void CRenderer::SetUI(CEngineUI* UI)
 {
-	this->EngineUI = UI;
+	this->EditorUI = UI;
 }
 
 CShaderProgram* CRenderer::GetShaderProgram()

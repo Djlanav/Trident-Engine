@@ -140,7 +140,6 @@
     <ClInclude Include="src\headers\Core\CommonHeaders.h" />
     <ClInclude Include="src\headers\Core\Display.h" />
     <ClInclude Include="src\headers\Core\Engine.h" />
-    <ClInclude Include="src\headers\Core\EngineUI\EngineUIFunctionPointers.h" />
     <ClInclude Include="src\headers\Core\FileIO.h" />
     <ClInclude Include="src\headers\Core\Loader.h" />
     <ClInclude Include="src\headers\Core\Mesh.h" />

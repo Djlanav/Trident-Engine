@@ -21,8 +21,6 @@ void CEngine::GetFunctionPointers()
 	GetDLL("Editor UI DLL", L"EngineUI.dll", UIDLL);
 	LoadDLLs();
 
-	addFloatElements = (func_ptr_three_A)GetProcAddress(*GetDLLHandle("Editor UI DLL"), "AddFloatUIElement");
-	setFloatElements = (func_ptr_two_A)GetProcAddress(*GetDLLHandle("Editor UI DLL"), "SetFloatUIElements");
 	createEngineUI = (func_ptr_empty_ui_ret)GetProcAddress(*GetDLLHandle("Editor UI DLL"), "createUI");
 }
 
@@ -41,7 +39,10 @@ void CEngine::InitCore(CRenderer* Renderer, CDisplay* Display)
 	GetFunctionPointers();
 
 	EngineDisplay->CreateDisplay();
+	EditorUI = createEngineUI();
+
 	EngineRenderer->SetIsWireframeEnabled(false);
+	EngineRenderer->SetUI(EditorUI);
 	EngineRenderer->InitializeMeshData();
 
 	EngineMesh = EngineRenderer->GetLoader()->LoadMeshFromVao(EngineRenderer->GetMeshData());
@@ -50,10 +51,15 @@ void CEngine::InitCore(CRenderer* Renderer, CDisplay* Display)
 	EngineRenderer->InitializeTextures();
 }
 
+CEngineUI* CEngine::GetEditorUIPtr()
+{
+	return EditorUI;
+}
+
 void CEngine::MakeUIFloats(CEngineUI* UI)
 {
 	UI->InitializeIMGUI(EngineDisplay->GetWindow());
-	setFloatElements(UI, new FPMap);
+	EditorUI->SetFloatUIElements(new FPMap);
 
 	float* color = new float[4];
 	color[0] = 0.4f;
@@ -62,7 +68,7 @@ void CEngine::MakeUIFloats(CEngineUI* UI)
 	color[3] = 1.0f;
 
 	FloatPointerContainer.AddToBuffer("ColorData", color);
-	addFloatElements(UI, "Color", color);
+	EditorUI->AddFloatUIElement("Color", color);
 }
 
 TUIDataContainer<float*>* CEngine::GetFloatPointerContainer()
@@ -117,5 +123,6 @@ void CEngine::Close(CEngineUI* UI)
 	UI->CleanUpUI();
 	delete UI;
 
-	FreeLibrary(UIDLL);
+	// Free All DLLs
+	FreeAll();
 }

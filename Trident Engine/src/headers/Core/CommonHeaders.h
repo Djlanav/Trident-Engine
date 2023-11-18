@@ -6,4 +6,6 @@
 #include <unordered_map>
 #include <functional>
 #include <fstream>
+#include <future>
+#include <cstdarg>
 #include <Windows.h>

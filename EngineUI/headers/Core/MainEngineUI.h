@@ -7,19 +7,7 @@
 typedef std::unordered_map<String, float*> FPMap;
 typedef std::unordered_map<String, uint32*> UIPMap;
 
-class ENGINEUI_API CUI
-{
-public:
-	virtual void InitializeIMGUI(GLFWwindow* window) = 0;
-
-	virtual void CreateUIFrame() = 0;
-
-	virtual void Render(const String& Name, GLFWwindow* window) = 0;
-
-	virtual void CleanUpUI() = 0;
-};
-
-class ENGINEUI_API CEngineUI : public CUI 
+class ENGINEUI_API CEngineUI
 {
 private:
 	FPMap* FloatUIElements;
@@ -27,41 +15,37 @@ private:
 	String* FileRetrieved;
 
 public:
-	void InitializeIMGUI(GLFWwindow* window) override;
+	virtual void InitializeIMGUI(GLFWwindow* window);
 
-	void CreateUIFrame() override;
+	virtual void CreateUIFrame();
+	virtual void Render(const String& Name, GLFWwindow* window);
 
-	void AddFloatUIElement(const String& Name, float* Element);
-	void AddIntegerUIElement(const String& Name, uint32* Element);
+	virtual void CleanUpUI();
 
-	void Render(const String& Name, GLFWwindow* window) override;
+	virtual void AddFloatUIElement(const String& Name, float* Element);
+	virtual void AddIntegerUIElement(const String& Name, uint32* Element);
 
-	void CleanUpUI() override;
+	virtual FPMap* GetFloatUIElements();
+	virtual UIPMap* GetUnsignedUIElements();
 
-	FPMap* GetFloatUIElements();
-	UIPMap* GetUnsignedUIElements();
+	virtual void SetFloatUIElements(FPMap* Map);
+	virtual void SetUnsignedUIElements(UIPMap* Map);
 
-	void SetFloatUIElements(FPMap* Map);
-	void SetUnsignedUIElements(UIPMap* Map);
+	virtual String* GetFileDialogResult();
 
-	String* GetFileName();
+public: // ImGUI interfacing
+	virtual void BeginImGUI(const String& WindowName);
+
+	virtual void AddTextIMGUI(const String& Text, ...);
+
+	virtual void EndImGUI();
 
 private:
-	String* OpenFileDialog(GLFWwindow* window);
+	virtual String* OpenFileDialog(GLFWwindow* window);
 };
 
 // ** Normal Functions**
 extern "C"
 {
 	ENGINEUI_API CEngineUI* createUI();
-	ENGINEUI_API FPMap* GetFloatUIElements(CEngineUI* UI);
-	ENGINEUI_API UIPMap* GetUnsignedUIElements(CEngineUI* UI);
-
-	ENGINEUI_API void SetFloatUIElements(CEngineUI* UI, FPMap* Map);
-	ENGINEUI_API void SetUnsignedUIElements(CEngineUI* UI, UIPMap* Map);
-
-	ENGINEUI_API void AddFloatUIElement(CEngineUI* UI, const String& Name, float* Element);
-	ENGINEUI_API void AddIntegerUIElement(CEngineUI* UI, const String& Name, uint32* Element);
-
-	ENGINEUI_API String* GetFileDialogResult(CEngineUI* UI);
 }

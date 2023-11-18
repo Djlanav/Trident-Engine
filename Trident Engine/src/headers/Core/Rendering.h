@@ -22,13 +22,12 @@ typedef String* (*func_ptr_one_arg)(CEngineUI* UI);
 class CRenderer : public CModule
 {
 private:
-	HINSTMap DLLMap;
 	SVector DLLNameVector;
 
 private:
 	bool isWireframeEnabled;
 
-	CEngineUI* EngineUI;
+	CEngineUI* EditorUI;
 
 	CLoader* Loader;
 	CShaderProgram ShaderProgram;
@@ -60,7 +59,7 @@ public:
 
 	void GetFunctionPointers();
 
-	void DynamicTextureLoad(CEngineUI* UI);
+	void DynamicTextureLoad();
 
 	void Render(CMesh* mesh);
 

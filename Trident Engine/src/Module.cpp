@@ -33,6 +33,8 @@ void CModule::LoadDLLs()
 			CLogger::Log("FAILED TO LOAD DLL! STATUS:", &loadStatus, nullptr);
 		}
 	}
+
+	std::cout << DLLMap.at(DLLNameRefs.at("Editor UI DLL"));
 }
 
 HMODULE* CModule::GetDLLHandle(const String& RefName)
