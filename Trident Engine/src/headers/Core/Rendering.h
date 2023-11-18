@@ -59,7 +59,10 @@ public:
 
 	void GetFunctionPointers();
 
-	void DynamicTextureLoad();
+	// Separate into two functions ^^
+
+	void LoadTextureFromFile();
+	void LoadTextureFromList();
 
 	void Render(CMesh* mesh);
 	void Interface();

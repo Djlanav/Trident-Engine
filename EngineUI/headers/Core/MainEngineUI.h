@@ -37,10 +37,12 @@ public:
 
 public: // ImGUI interfacing
 	virtual void UIBegin(const String& WindowName);
+	virtual void UIBeginChild(const String& ChildName);
 
 	virtual bool UIButton(const String& Text);
 
 	virtual void UIEnd();
+	virtual void UIEndChild();
 };
 
 // ** Normal Functions**

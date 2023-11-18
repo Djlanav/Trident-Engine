@@ -81,8 +81,7 @@ void CRenderer::InitializeTextures()
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
 }
 
-// Load a texture during runtime
-void CRenderer::DynamicTextureLoad()
+void CRenderer::LoadTextureFromFile()
 {
 	String* file = &(*EditorUI->OpenFileDialog(Display->GetWindow()));
 	EditorUI->SetFileRetrieved(file);
@@ -98,15 +97,25 @@ void CRenderer::DynamicTextureLoad()
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
 }
 
+void CRenderer::LoadTextureFromList()
+{
+
+}
+
 void CRenderer::Interface()
 {
 	EditorUI->UIBegin("Rendering Stuff");
 
-	if (EditorUI->UIButton("Select new texture"))
+	if (EditorUI->UIButton("Select new texture"));
 	{
-		DynamicTextureLoad();
+		LoadTextureFromFile();
 	}
 
+	EditorUI->UIBeginChild("Texture List");
+	
+
+	
+	EditorUI->UIEndChild();
 	EditorUI->UIEnd();
 }
 

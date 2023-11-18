@@ -125,6 +125,11 @@ void CEngineUI::UIBegin(const String& WindowName)
 	ImGui::Begin(WindowName.c_str());
 }
 
+void CEngineUI::UIBeginChild(const String& ChildName)
+{
+	ImGui::BeginChild(ChildName.c_str());
+}
+
 bool CEngineUI::UIButton(const String& Text)
 {
 	return ImGui::Button(Text.c_str());
@@ -133,6 +138,11 @@ bool CEngineUI::UIButton(const String& Text)
 void CEngineUI::UIEnd()
 {
 	ImGui::End();
+}
+
+void CEngineUI::UIEndChild()
+{
+	ImGui::EndChild();
 }
 
 void CEngineUI::Render()
