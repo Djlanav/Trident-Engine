@@ -106,7 +106,7 @@ void CRenderer::Interface()
 {
 	EditorUI->UIBegin("Rendering Stuff");
 
-	if (EditorUI->UIButton("Select new texture"));
+	if (EditorUI->UIButton("Select new texture"))
 	{
 		LoadTextureFromFile();
 	}
