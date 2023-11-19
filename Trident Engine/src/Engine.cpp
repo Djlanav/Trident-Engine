@@ -48,7 +48,7 @@ void CEngine::InitCore(CRenderer* Renderer, CDisplay* Display)
 	EngineMesh = EngineRenderer->GetLoader()->LoadMeshFromVao(EngineRenderer->GetMeshData());
 
 	EngineRenderer->InitializeShaders();
-	EngineRenderer->InitializeTextures();
+	// EngineRenderer->InitializeTextures();
 }
 
 CEngineUI* CEngine::GetEditorUIPtr()

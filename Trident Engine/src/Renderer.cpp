@@ -86,13 +86,17 @@ void CRenderer::LoadTextureFromFile()
 	String* file = &(*EditorUI->OpenFileDialog(Display->GetWindow()));
 	EditorUI->SetFileRetrieved(file);
 
+	TextureLoader.LoadTextureData(*EditorUI->GetFileDialogResult());
+	if (TextureLoader.Textures.size() > 1)
+	{
+		TextureLoader.IncrementIndex();
+	}
+
+	// int32 index = TextureLoader.GetAccessingIndex() - 1;
 	uint32 id = TextureLoader.Textures.at(TextureLoader.GetAccessingIndex())->GetTextureID();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDeleteTextures(1, &id);
-
-	TextureLoader.LoadTextureData(*EditorUI->GetFileDialogResult());
-	TextureLoader.IncrementIndex();
 
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
 }
@@ -111,11 +115,6 @@ void CRenderer::Interface()
 		LoadTextureFromFile();
 	}
 
-	EditorUI->UIBeginChild("Texture List");
-	
-
-	
-	EditorUI->UIEndChild();
 	EditorUI->UIEnd();
 }
 
