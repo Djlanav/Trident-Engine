@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <list>
 #include <cstdint>
 #include <algorithm>
 #include <string>
@@ -8,4 +9,5 @@
 #include <fstream>
 #include <future>
 #include <cstdarg>
+#include <thread>
 #include <Windows.h>

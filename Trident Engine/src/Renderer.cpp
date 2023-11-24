@@ -90,13 +90,14 @@ void CRenderer::LoadTextureFromFile()
 	if (TextureLoader.Textures.size() > 1)
 	{
 		TextureLoader.IncrementIndex();
-	}
 
-	// int32 index = TextureLoader.GetAccessingIndex() - 1;
-	uint32 id = TextureLoader.Textures.at(TextureLoader.GetAccessingIndex())->GetTextureID();
+		glBindTexture(GL_TEXTURE_2D, 0);
+	} 
 
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDeleteTextures(1, &id);
+	/*if (TextureLoader.Textures.size() > 1)
+	{
+
+	}*/
 
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
 }

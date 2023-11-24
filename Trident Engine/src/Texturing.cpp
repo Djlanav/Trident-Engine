@@ -12,9 +12,34 @@
 
 // ** CTextureLoader **
 
+bool CTextureLoader::CheckForTexture(CTexture* Texture)
+{
+	for (CTexture* t : Textures)
+	{
+		if (*t->GetImageName() == *Texture->GetImageName())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void CTextureLoader::LoadTextureData(const String& Name)
 {
 	CTexture* texture = new CTexture();
+	texture->SetImageName(Name);
+
+	std::future<bool> checkTextureResult = std::async(std::launch::async, [this, texture]() 
+		{ 
+			return CheckForTexture(texture); 
+	});
+	bool result = checkTextureResult.get();
+
+	if (result != true)
+	{
+		return;
+	}
+
 	ELogStatus status;
 
 	int32 w;
@@ -27,7 +52,6 @@ void CTextureLoader::LoadTextureData(const String& Name)
 	texture->Make(w, h, c);
 
 	texture->SetImageData(data);
-	texture->SetImageName(Name);
 
 	if (c == 3)
 	{

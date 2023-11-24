@@ -60,6 +60,8 @@ private:
 		int32 ImageWidth, int32 ImageHeight, int32 Border, int32 ImageFormat, uint8* Data);
 
 public:
+	bool CheckForTexture(CTexture* Texture);
+
 	void LoadTextureData(const String& Name);
 	void InitializeTexture(uint32 Index);
 
