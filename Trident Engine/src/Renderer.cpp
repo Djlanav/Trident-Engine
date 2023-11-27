@@ -81,7 +81,7 @@ void CRenderer::LoadTextureFromFile()
 
 	std::shared_ptr<CTexture> texture = TextureLoader.LoadTextureData(*EditorUI->GetFileDialogResult());
 
-	if (TextureLoader.Textures.size() > 1)
+	if (TextureLoader.TextureMap.RetrieveListSize() > 1)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

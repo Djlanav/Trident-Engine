@@ -6,7 +6,6 @@ class CTexture;
 class CTextureLoader;
 
 // ** Typedefs **
-using IMGVector = std::vector<std::shared_ptr<CTexture>>;
 using StringTextureHashMap = std::unordered_map<String, std::shared_ptr<CTexture>>;
 
 // ** Classes **
@@ -28,13 +27,14 @@ public:
 
 	String* GetLastAddedTextureName();
 
+	size_t RetrieveListSize();
+
 	~CTextureList();
 };
 
 class CTextureLoader
 {
 public:
-	IMGVector Textures;
 	CTextureList TextureMap;
 
 private:
@@ -74,6 +74,7 @@ private:
 	uint32 Format;
 
 	bool IsLoaded = false; // Default is false. Obviously..
+	bool IsFreed = false; // Related to stbi_image_free();
 	bool HasMipmap = false; // Again :)
 
 public:
@@ -90,6 +91,7 @@ public:
 	uint32 GetTextureID();
 
 	bool GetIsLoaded();
+	bool GetIsFreed();
 	bool GetHasMipmap();
 
 	void Make(int32 Width, int32 Height, int32 Channels);
@@ -103,5 +105,6 @@ public:
 	void SetFormat(uint32 Format);
 	void SetIsLoaded(bool Status);
 	void SetHasMipmap(bool Status);
+	void SetIsFreed(bool Status);
 };
 

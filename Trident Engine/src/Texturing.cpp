@@ -73,6 +73,11 @@ std::shared_ptr<CTexture> CTextureList::RetrieveTextureByName(const String& Text
 	return TexturesMap.at(TextureToRetrieve);
 }
 
+size_t CTextureList::RetrieveListSize()
+{
+	return TexturesMap.size();
+}
+
 CTextureList::~CTextureList()
 {
 	TexturesMap.clear();
@@ -124,7 +129,8 @@ std::shared_ptr<CTexture> CTextureLoader::LoadTextureData(const String& Name)
 		}
 
 		uint32 id = texture->GetTextureID();
-		glGenTextures(GL_TEXTURE_2D, &id);
+		glGenTextures(1, &id);
+		texture->SetTextureID(id);
 
 		texture->SetIsLoaded(true);
 		TextureMap.AddTextureToList(*texture->GetImageName(), texture);
@@ -143,9 +149,10 @@ void CTextureLoader::InitializeTexture(const String& Name)
 	SetTextureParameters(texturePointer, 0, texturePointer->GetFormat(), texturePointer->GetWidth(), texturePointer->GetHeight(),
 		0, texturePointer->GetFormat(), texturePointer->GetImageData());
 
-	if (texturePointer->GetIsLoaded() == true)
+	if (texturePointer->GetIsFreed() == true)
 	{
 		stbi_image_free(texturePointer->GetImageData());
+		texturePointer->SetIsFreed(false);
 	}
 }
 
@@ -236,6 +243,11 @@ bool CTexture::GetIsLoaded()
 	return IsLoaded;
 }
 
+bool CTexture::GetIsFreed()
+{
+	return IsFreed;
+}
+
 bool CTexture::GetHasMipmap()
 {
 	return HasMipmap;
@@ -284,4 +296,9 @@ void CTexture::SetIsLoaded(bool Status)
 void CTexture::SetHasMipmap(bool Status)
 {
 	HasMipmap = Status;
+}
+
+void CTexture::SetIsFreed(bool Status)
+{
+	IsFreed = Status;
 }
