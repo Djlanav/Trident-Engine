@@ -44,19 +44,14 @@ std::shared_ptr<CTexture> CTextureList::FindMatchingTexture(const String& Textur
 		{
 			auto it = TexturesMap.find(TextureNameToCheck);
 
-			switch (it != TexturesMap.end())
+			if (it != TexturesMap.end())
 			{
-			case true:
 				return it->second;
-				break;
-
-			case false:
-				return nullptr;
-				break;
-
-			default:
-				return nullptr;
-				break;
+			}
+			else
+			{
+				std::shared_ptr<CTexture> findFailed(nullptr);
+				return findFailed;
 			}
 		});
 
@@ -73,6 +68,11 @@ String* CTextureList::GetLastAddedTextureName()
 	return PreviouslyAddedTexture->GetImageName();
 }
 
+std::shared_ptr<CTexture> CTextureList::RetrieveTextureByName(const String& TextureToRetrieve)
+{
+	return TexturesMap.at(TextureToRetrieve);
+}
+
 CTextureList::~CTextureList()
 {
 	TexturesMap.clear();
@@ -80,96 +80,86 @@ CTextureList::~CTextureList()
 
 // ** CTextureLoader **
 
-bool CTextureLoader::CheckForTexture(CTexture* Texture)
+std::shared_ptr<CTexture> CTextureLoader::LoadTextureData(const String& Name)
 {
-	for (std::shared_ptr<CTexture> t : Textures)
-	{
-		if (*t->GetImageName() == *Texture->GetImageName())
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-void CTextureLoader::LoadTextureData(const String& Name)
-{
-	std::shared_ptr<CTexture> texture = std::make_shared<CTexture>();
-	texture->SetImageName(Name);
-
 	std::shared_ptr<CTexture> matchResult = TextureMap.FindMatchingTexture(Name);
-	if (matchResult != nullptr)
+	if (matchResult.get() != nullptr)
 	{
-		
-	}
-
-	ELogStatus status;
-
-	int32 w;
-	int32 h;
-	int32 c;
-
-	stbi_set_flip_vertically_on_load(true);
-
-	uint8* data = stbi_load(Name.c_str(), &w, &h, &c, 0);
-	texture->Make(w, h, c);
-
-	texture->SetImageData(data);
-
-	if (c == 3)
-	{
-		texture->SetFormat(GL_RGB);
-	}
-	else if (c > 3)
-	{
-		texture->SetFormat(GL_RGBA);
-	}
-
-	if (texture->GetImageData() == nullptr || data == nullptr)
-	{
-		status = FAILURE;
-		CLogger::Log("Texture Data Loading:", &status, nullptr);
+		return matchResult;
 	}
 	else
 	{
-		status = SUCCESS;
-		CLogger::Log("Texture Data Loading:", &status, nullptr);
-	}
+		std::shared_ptr<CTexture> texture = std::make_shared<CTexture>();
+		texture->SetImageName(Name);
 
-	if (sameTextures != true)
-	{
-		Textures.push_back(texture);
+		ELogStatus status;
+
+		int32 w, h, c;
+
+		stbi_set_flip_vertically_on_load(true);
+
+		uint8* data = stbi_load(Name.c_str(), &w, &h, &c, 0);
+		texture->Make(w, h, c);
+
+		texture->SetImageData(data);
+
+		if (c == 3)
+		{
+			texture->SetFormat(GL_RGB);
+		}
+		else if (c > 3)
+		{
+			texture->SetFormat(GL_RGBA);
+		}
+
+		if (texture->GetImageData() == nullptr || data == nullptr)
+		{
+			status = FAILURE;
+			CLogger::Log("Texture Data Loading:", &status, nullptr);
+		}
+		else
+		{
+			status = SUCCESS;
+			CLogger::Log("Texture Data Loading:", &status, nullptr);
+		}
+
+		uint32 id = texture->GetTextureID();
+		glGenTextures(GL_TEXTURE_2D, &id);
+
+		texture->SetIsLoaded(true);
+		TextureMap.AddTextureToList(*texture->GetImageName(), texture);
+	
+		return texture;
 	}
 }
 
-void CTextureLoader::InitializeTexture(uint32 Index)
+void CTextureLoader::InitializeTexture(const String& Name)
 {
-	uint32 id = Textures.at(Index)->GetTextureID();
-	std::shared_ptr<CTexture> texturePointer = Textures.at(Index);
-	
-	if (sameTextures != true)
-	{
-		glGenTextures(1, &id);
-	}
+	std::shared_ptr<CTexture> texturePointer = TextureMap.RetrieveTextureByName(Name);
+	uint32 id = texturePointer->GetTextureID();
 
 	glBindTexture(GL_TEXTURE_2D, id);
 
-	SetTextureParameters(0, texturePointer->GetFormat(), texturePointer->GetWidth(), texturePointer->GetHeight(),
+	SetTextureParameters(texturePointer, 0, texturePointer->GetFormat(), texturePointer->GetWidth(), texturePointer->GetHeight(),
 		0, texturePointer->GetFormat(), texturePointer->GetImageData());
 
-	if (sameTextures != true)
+	if (texturePointer->GetIsLoaded() == true)
 	{
 		stbi_image_free(texturePointer->GetImageData());
 	}
 }
 
-void CTextureLoader::SetTextureParameters(int32 MipMapLevel, int32 OpenGLFormat,
+void CTextureLoader::SetTextureParameters(std::shared_ptr<CTexture> TexturePointer, int32 MipMapLevel, int32 OpenGLFormat,
 	int32 ImageWidth, int32 ImageHeight, int32 Border, int32 ImageFormat, uint8* Data)
 {
 	glTexImage2D(GL_TEXTURE_2D, MipMapLevel, OpenGLFormat, ImageWidth, ImageHeight, Border,
 		ImageFormat, GL_UNSIGNED_BYTE, Data);
 
-	glGenerateMipmap(GL_TEXTURE_2D);
+	if (TexturePointer->GetHasMipmap() == false)
+	{
+		glGenerateMipmap(GL_TEXTURE_2D);
+		TexturePointer->SetHasMipmap(true);
+	}
 }
 
 void CTextureLoader::IncrementIndex()
@@ -241,6 +231,16 @@ uint32 CTexture::GetFormat()
 	return Format;
 }
 
+bool CTexture::GetIsLoaded()
+{
+	return IsLoaded;
+}
+
+bool CTexture::GetHasMipmap()
+{
+	return HasMipmap;
+}
+
 void CTexture::SetImageName(const String& Name)
 {
 	sImageName = Name;
@@ -274,4 +274,14 @@ void CTexture::SetTextureID(uint32 NewID)
 void CTexture::SetFormat(uint32 Format)
 {
 	this->Format = Format;
+}
+
+void CTexture::SetIsLoaded(bool Status)
+{
+	IsLoaded = Status;
+}
+
+void CTexture::SetHasMipmap(bool Status)
+{
+	HasMipmap = Status;
 }

@@ -74,36 +74,19 @@ void CRenderer::InitializeShaders()
 	ShaderProgram.CreateShaderProgram();
 }
 
-// Load initial textures at start
-void CRenderer::InitializeTextures()
-{
-	TextureLoader.LoadTextureData("res/grass.png");
-	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
-}
-
 void CRenderer::LoadTextureFromFile()
 {
 	String* file = &(*EditorUI->OpenFileDialog(Display->GetWindow()));
 	EditorUI->SetFileRetrieved(file);
 
-	TextureLoader.LoadTextureData(*EditorUI->GetFileDialogResult());
-	if (TextureLoader.Textures.size() > 1 && TextureLoader.GetSameTexturesBool() != true)
-	{
-		TextureLoader.IncrementIndex();
-	}
+	std::shared_ptr<CTexture> texture = TextureLoader.LoadTextureData(*EditorUI->GetFileDialogResult());
 
-	// Separate
 	if (TextureLoader.Textures.size() > 1)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
-}
-
-void CRenderer::LoadTextureFromList()
-{
-
+	TextureLoader.InitializeTexture(*texture->GetImageName());
 }
 
 void CRenderer::Interface()

@@ -1,6 +1,7 @@
 #pragma once
 
 // ** Forward Declarations **
+class CTextureList;
 class CTexture;
 class CTextureLoader;
 
@@ -23,10 +24,39 @@ public:
 
 	std::shared_ptr<CTexture> FindMatchingTexture(const String& TextureNameToCheck);
 	std::shared_ptr<CTexture> GetLastAddedTexture();
+	std::shared_ptr<CTexture> RetrieveTextureByName(const String& TextureToRetrieve);
 
 	String* GetLastAddedTextureName();
 
 	~CTextureList();
+};
+
+class CTextureLoader
+{
+public:
+	IMGVector Textures;
+	CTextureList TextureMap;
+
+private:
+	int32 AccessingIndex = 0;
+	String CurrentlyLoadingTexture;
+
+	bool sameTextures;
+
+private:
+	void SetTextureParameters(std::shared_ptr<CTexture>, int32, int32,
+		int32, int32, int32, int32, uint8*);
+
+public:
+	std::shared_ptr<CTexture> LoadTextureData(const String& Name);
+	void InitializeTexture(const String& Name);
+
+	void IncrementIndex();
+	int32* GetAccessingIndexPointer();
+	int32 GetAccessingIndex();
+
+	void SetSameTexturesBool(bool State);
+	bool GetSameTexturesBool();
 };
 
 class CTexture
@@ -43,6 +73,9 @@ private:
 	uint32 TextureID;
 	uint32 Format;
 
+	bool IsLoaded = false; // Default is false. Obviously..
+	bool HasMipmap = false; // Again :)
+
 public:
 	// ** Getters **
 	String* GetImageName();
@@ -56,6 +89,9 @@ public:
 
 	uint32 GetTextureID();
 
+	bool GetIsLoaded();
+	bool GetHasMipmap();
+
 	void Make(int32 Width, int32 Height, int32 Channels);
 
 	void SetImageName(const String& Name);
@@ -65,32 +101,7 @@ public:
 	void SetChannels(uint32 NewNumber);
 	void SetTextureID(uint32 NewID);
 	void SetFormat(uint32 Format);
+	void SetIsLoaded(bool Status);
+	void SetHasMipmap(bool Status);
 };
 
-class CTextureLoader
-{
-public:
-	IMGVector Textures;
-	CTextureList TextureMap;
-
-private:
-	int32 AccessingIndex = 0;
-	bool sameTextures;
-
-private:
-	void SetTextureParameters(int32 MipMapLevel, int32 OpenGLFormat,
-		int32 ImageWidth, int32 ImageHeight, int32 Border, int32 ImageFormat, uint8* Data);
-
-public:
-	bool CheckForTexture(CTexture* Texture);
-
-	void LoadTextureData(const String& Name);
-	void InitializeTexture(uint32 Index);
-
-	void IncrementIndex();
-	int32* GetAccessingIndexPointer();
-	int32 GetAccessingIndex();
-
-	void SetSameTexturesBool(bool State);
-	bool GetSameTexturesBool();
-};
