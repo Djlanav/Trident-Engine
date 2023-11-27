@@ -87,17 +87,16 @@ void CRenderer::LoadTextureFromFile()
 	EditorUI->SetFileRetrieved(file);
 
 	TextureLoader.LoadTextureData(*EditorUI->GetFileDialogResult());
-	if (TextureLoader.Textures.size() > 1)
+	if (TextureLoader.Textures.size() > 1 && TextureLoader.GetSameTexturesBool() != true)
 	{
 		TextureLoader.IncrementIndex();
+	}
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-	} 
-
-	/*if (TextureLoader.Textures.size() > 1)
+	// Separate
+	if (TextureLoader.Textures.size() > 1)
 	{
-
-	}*/
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
 	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
 }

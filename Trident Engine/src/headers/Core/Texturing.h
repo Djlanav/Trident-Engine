@@ -5,9 +5,29 @@ class CTexture;
 class CTextureLoader;
 
 // ** Typedefs **
-typedef std::vector<CTexture*> IMGVector;
+using IMGVector = std::vector<std::shared_ptr<CTexture>>;
+using StringTextureHashMap = std::unordered_map<String, std::shared_ptr<CTexture>>;
 
 // ** Classes **
+
+class CTextureList
+{
+private:
+	StringTextureHashMap TexturesMap;
+	std::shared_ptr<CTexture> PreviouslyAddedTexture;
+
+public:
+	CTextureList();
+
+	void AddTextureToList(const String& Name, std::shared_ptr<CTexture> Texture);
+
+	std::shared_ptr<CTexture> FindMatchingTexture(const String& TextureNameToCheck);
+	std::shared_ptr<CTexture> GetLastAddedTexture();
+
+	String* GetLastAddedTextureName();
+
+	~CTextureList();
+};
 
 class CTexture
 {
@@ -51,9 +71,11 @@ class CTextureLoader
 {
 public:
 	IMGVector Textures;
+	CTextureList TextureMap;
 
 private:
 	int32 AccessingIndex = 0;
+	bool sameTextures;
 
 private:
 	void SetTextureParameters(int32 MipMapLevel, int32 OpenGLFormat,
@@ -68,4 +90,7 @@ public:
 	void IncrementIndex();
 	int32* GetAccessingIndexPointer();
 	int32 GetAccessingIndex();
+
+	void SetSameTexturesBool(bool State);
+	bool GetSameTexturesBool();
 };

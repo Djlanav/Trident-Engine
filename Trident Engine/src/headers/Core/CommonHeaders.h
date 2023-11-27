@@ -10,4 +10,5 @@
 #include <future>
 #include <cstdarg>
 #include <thread>
+#include <memory>
 #include <Windows.h>

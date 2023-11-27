@@ -10,11 +10,79 @@
 #include "Core/Texturing.h"
 #include "Plugins/Logger.h"
 
+#define TEXTURELIST_RESERVE_SIZE 6
+
+// ** CTextureList **
+CTextureList::CTextureList()
+	: PreviouslyAddedTexture(nullptr)
+{
+	TexturesMap.reserve(TEXTURELIST_RESERVE_SIZE);
+}
+
+/// <summary>
+/// Insert a CTexture* to the TexturesMap field.
+/// This method also sets the field "PreviouslyAddedTexture" to the the CTexture* passed in.
+/// </summary>
+/// <param name="Name"></param>
+/// <param name="Texture"></param>
+void CTextureList::AddTextureToList(const String& Name, std::shared_ptr<CTexture> Texture)
+{
+	PreviouslyAddedTexture = Texture;
+	TexturesMap.insert({ Name, Texture });
+}
+
+/// <summary>
+/// Loops through the Textures map and checks if two CTexture instances have the same name. 
+/// If true, returns a pointer to the copy texture. Else it returns nullptr.
+/// Note: this methods does its work in a separate thread using async.
+/// </summary>
+/// <param name="TextureNameToCheck"></param>
+/// <returns>Pointer to CTexture instance</returns>
+std::shared_ptr<CTexture> CTextureList::FindMatchingTexture(const String& TextureNameToCheck)
+{
+	std::future<std::shared_ptr<CTexture>> textureMatchFutureResult = std::async(std::launch::async, [&]
+		{
+			auto it = TexturesMap.find(TextureNameToCheck);
+
+			switch (it != TexturesMap.end())
+			{
+			case true:
+				return it->second;
+				break;
+
+			case false:
+				return nullptr;
+				break;
+
+			default:
+				return nullptr;
+				break;
+			}
+		});
+
+	return textureMatchFutureResult.get();
+}
+
+std::shared_ptr<CTexture> CTextureList::GetLastAddedTexture()
+{
+	return PreviouslyAddedTexture;
+}
+
+String* CTextureList::GetLastAddedTextureName()
+{
+	return PreviouslyAddedTexture->GetImageName();
+}
+
+CTextureList::~CTextureList()
+{
+	TexturesMap.clear();
+}
+
 // ** CTextureLoader **
 
 bool CTextureLoader::CheckForTexture(CTexture* Texture)
 {
-	for (CTexture* t : Textures)
+	for (std::shared_ptr<CTexture> t : Textures)
 	{
 		if (*t->GetImageName() == *Texture->GetImageName())
 		{
@@ -26,18 +94,13 @@ bool CTextureLoader::CheckForTexture(CTexture* Texture)
 
 void CTextureLoader::LoadTextureData(const String& Name)
 {
-	CTexture* texture = new CTexture();
+	std::shared_ptr<CTexture> texture = std::make_shared<CTexture>();
 	texture->SetImageName(Name);
 
-	std::future<bool> checkTextureResult = std::async(std::launch::async, [this, texture]() 
-		{ 
-			return CheckForTexture(texture); 
-	});
-	bool result = checkTextureResult.get();
-
-	if (result != true)
+	std::shared_ptr<CTexture> matchResult = TextureMap.FindMatchingTexture(Name);
+	if (matchResult != nullptr)
 	{
-		return;
+		
 	}
 
 	ELogStatus status;
@@ -73,20 +136,31 @@ void CTextureLoader::LoadTextureData(const String& Name)
 		CLogger::Log("Texture Data Loading:", &status, nullptr);
 	}
 
-	Textures.push_back(texture);
+	if (sameTextures != true)
+	{
+		Textures.push_back(texture);
+	}
 }
 
 void CTextureLoader::InitializeTexture(uint32 Index)
 {
 	uint32 id = Textures.at(Index)->GetTextureID();
-	CTexture* texturePointer = Textures.at(Index);
-	glGenTextures(1, &id);
+	std::shared_ptr<CTexture> texturePointer = Textures.at(Index);
+	
+	if (sameTextures != true)
+	{
+		glGenTextures(1, &id);
+	}
+
 	glBindTexture(GL_TEXTURE_2D, id);
 
 	SetTextureParameters(0, texturePointer->GetFormat(), texturePointer->GetWidth(), texturePointer->GetHeight(),
 		0, texturePointer->GetFormat(), texturePointer->GetImageData());
 
-	stbi_image_free(texturePointer->GetImageData());
+	if (sameTextures != true)
+	{
+		stbi_image_free(texturePointer->GetImageData());
+	}
 }
 
 void CTextureLoader::SetTextureParameters(int32 MipMapLevel, int32 OpenGLFormat,
@@ -100,7 +174,7 @@ void CTextureLoader::SetTextureParameters(int32 MipMapLevel, int32 OpenGLFormat,
 
 void CTextureLoader::IncrementIndex()
 {
-	this->AccessingIndex += 1;
+	AccessingIndex += 1;
 }
 
 int32* CTextureLoader::GetAccessingIndexPointer()
@@ -110,7 +184,17 @@ int32* CTextureLoader::GetAccessingIndexPointer()
 
 int32 CTextureLoader::GetAccessingIndex()
 {
-	return this->AccessingIndex;
+	return AccessingIndex;
+}
+
+void CTextureLoader::SetSameTexturesBool(bool State)
+{
+	sameTextures = State;
+}
+
+bool CTextureLoader::GetSameTexturesBool()
+{
+	return sameTextures;
 }
 
 // ** CTexture **
