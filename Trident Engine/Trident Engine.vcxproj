@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>TR_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\headers\Plugins\imgui;$(SolutionDir)EngineUI\headers;$(ProjectDir)src\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)EngineUI\headers\Core\;$(SolutionDir)EngineUI\headers;$(ProjectDir)src\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeaderFile>Core/CommonHeaders.h</PrecompiledHeaderFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -140,7 +140,6 @@
     <ClInclude Include="src\headers\Core\CommonHeaders.h" />
     <ClInclude Include="src\headers\Core\Display.h" />
     <ClInclude Include="src\headers\Core\Engine.h" />
-    <ClInclude Include="src\headers\Core\EngineUI\EngineUIFunctionPointers.h" />
     <ClInclude Include="src\headers\Core\FileIO.h" />
     <ClInclude Include="src\headers\Core\Loader.h" />
     <ClInclude Include="src\headers\Core\Mesh.h" />

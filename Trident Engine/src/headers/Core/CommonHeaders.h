@@ -1,9 +1,14 @@
 #include <iostream>
 #include <vector>
+#include <list>
 #include <cstdint>
 #include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <functional>
 #include <fstream>
+#include <future>
+#include <cstdarg>
+#include <thread>
+#include <memory>
 #include <Windows.h>

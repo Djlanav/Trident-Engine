@@ -19,6 +19,8 @@ typedef CEngineUI* (*func_ptr_empty_ui_ret)();
 class CEngine : public CModule
 {
 private:
+	CEngineUI* EditorUI;
+
 	CRenderer* EngineRenderer;
 	CDisplay* EngineDisplay;
 	CMesh* EngineMesh;
@@ -47,4 +49,7 @@ public:
 	void MakeUIFloats(CEngineUI* UI);
 
 	TUIDataContainer<float*>* GetFloatPointerContainer();
+
+public:
+	CEngineUI* GetEditorUIPtr();
 };

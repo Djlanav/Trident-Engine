@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\headers\Core\EngineUI\EngineUIFunctionPointers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\headers\Core\Display.h">
       <Filter>Header Files</Filter>
     </ClInclude>

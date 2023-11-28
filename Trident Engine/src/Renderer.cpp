@@ -1,5 +1,9 @@
 #include "Core/CommonHeaders.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -13,7 +17,7 @@
 #include "Core/Display.h"
 #include "Core/MainEngineUI.h"
 #include "Core/Module.h"
-#include <Core/Engine.h>
+#include "Core/Engine.h"
 #include "Core/Rendering.h"
 
 CRenderer::CRenderer(CDisplay* Display, CLoader* Loader)
@@ -70,20 +74,31 @@ void CRenderer::InitializeShaders()
 	ShaderProgram.CreateShaderProgram();
 }
 
-// Load initial textures at start
-void CRenderer::InitializeTextures()
+void CRenderer::LoadTextureFromFile()
 {
-	TextureLoader.LoadTextureData("res/grass.png");
-	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
+	String* file = &(*EditorUI->OpenFileDialog(Display->GetWindow()));
+	EditorUI->SetFileRetrieved(file);
+
+	std::shared_ptr<CTexture> texture = TextureLoader.LoadTextureData(*EditorUI->GetFileDialogResult());
+
+	if (TextureLoader.TextureMap.RetrieveListSize() > 1)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	TextureLoader.InitializeTexture(*texture->GetImageName());
 }
 
-// Load a texture during runtime
-void CRenderer::DynamicTextureLoad(CEngineUI* UI)
+void CRenderer::Interface()
 {
-	TextureLoader.LoadTextureData(*getFDResult(UI));
-	TextureLoader.IncrementIndex();
+	EditorUI->UIBegin("Rendering Stuff");
 
-	TextureLoader.InitializeTexture(TextureLoader.GetAccessingIndex());
+	if (EditorUI->UIButton("Select new texture"))
+	{
+		LoadTextureFromFile();
+	}
+
+	EditorUI->UIEnd();
 }
 
 void CRenderer::Render(CMesh* mesh)
@@ -120,7 +135,7 @@ void CRenderer::SetIsWireframeEnabled(bool Value)
 
 void CRenderer::SetUI(CEngineUI* UI)
 {
-	this->EngineUI = UI;
+	this->EditorUI = UI;
 }
 
 CShaderProgram* CRenderer::GetShaderProgram()
