@@ -162,31 +162,6 @@ void CTextureLoader::SetTextureParameters(std::shared_ptr<CTexture> TexturePoint
 	}
 }
 
-void CTextureLoader::IncrementIndex()
-{
-	AccessingIndex += 1;
-}
-
-int32* CTextureLoader::GetAccessingIndexPointer()
-{
-	return &AccessingIndex;
-}
-
-int32 CTextureLoader::GetAccessingIndex()
-{
-	return AccessingIndex;
-}
-
-void CTextureLoader::SetSameTexturesBool(bool State)
-{
-	sameTextures = State;
-}
-
-bool CTextureLoader::GetSameTexturesBool()
-{
-	return sameTextures;
-}
-
 // ** CTexture **
 
 void CTexture::Make(int32 Width, int32 Height, int32 Channels)

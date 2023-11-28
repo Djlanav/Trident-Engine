@@ -44,13 +44,6 @@ private:
 public:
 	std::shared_ptr<CTexture> LoadTextureData(const String& Name);
 	void InitializeTexture(const String& Name);
-
-	void IncrementIndex();
-	int32* GetAccessingIndexPointer();
-	int32 GetAccessingIndex();
-
-	void SetSameTexturesBool(bool State);
-	bool GetSameTexturesBool();
 };
 
 class CTexture
