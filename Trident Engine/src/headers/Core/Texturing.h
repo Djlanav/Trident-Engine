@@ -38,12 +38,6 @@ public:
 	CTextureList TextureMap;
 
 private:
-	int32 AccessingIndex = 0;
-	String CurrentlyLoadingTexture;
-
-	bool sameTextures;
-
-private:
 	void SetTextureParameters(std::shared_ptr<CTexture>, int32, int32,
 		int32, int32, int32, int32, uint8*);
 
