@@ -34,28 +34,21 @@ void CTextureList::AddTextureToList(const String& Name, std::shared_ptr<CTexture
 /// <summary>
 /// Loops through the Textures map and checks if two CTexture instances have the same name. 
 /// If true, returns a pointer to the copy texture. Else it returns nullptr.
-/// Note: this methods does its work in a separate thread using async.
 /// </summary>
 /// <param name="TextureNameToCheck"></param>
 /// <returns>Pointer to CTexture instance</returns>
 std::shared_ptr<CTexture> CTextureList::FindMatchingTexture(const String& TextureNameToCheck)
 {
-	std::future<std::shared_ptr<CTexture>> textureMatchFutureResult = std::async(std::launch::async, [&]
-		{
-			auto it = TexturesMap.find(TextureNameToCheck);
+	auto it = TexturesMap.find(TextureNameToCheck);
 
-			if (it != TexturesMap.end())
-			{
-				return it->second;
-			}
-			else
-			{
-				std::shared_ptr<CTexture> findFailed(nullptr);
-				return findFailed;
-			}
-		});
-
-	return textureMatchFutureResult.get();
+	if (it != TexturesMap.end())
+	{
+		return it->second;
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 std::shared_ptr<CTexture> CTextureList::GetLastAddedTexture()
