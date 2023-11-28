@@ -15,22 +15,15 @@
 #include "Core/FileIO.h"
 #include "Plugins/Logger.h"
 #include "Core/Display.h"
-#include "Core/MainEngineUI.h"
+#include "Core/EditorUI.h"
 #include "Core/Module.h"
 #include "Core/Engine.h"
 #include "Core/Rendering.h"
 
-CRenderer::CRenderer(CDisplay* Display, CLoader* Loader)
+CRenderer::CRenderer(CDisplay& Display, CLoader& Loader, CEditorUI& UI)
 	: ShaderProgram(), TextureLoader(), VertexShader(), FragmentShader(),
-	FragmentShaderCode(), VertexShaderCode(), MeshData(nullptr), isWireframeEnabled(false)
+	FragmentShaderCode(), VertexShaderCode(), MeshData(nullptr), isWireframeEnabled(false), Display(Display), Loader(Loader), EditorUI(UI)
 {
-	this->Display = Display;
-	this->Loader = Loader;
-}
-
-void CRenderer::GetFunctionPointers()
-{
-	getFDResult = (func_ptr_one_arg)GetProcAddress(*GetDLLHandle("Engine UI DLL"), "GetFileDialogResult");
 }
 
 void CRenderer::ClearScreen()
@@ -76,10 +69,9 @@ void CRenderer::InitializeShaders()
 
 void CRenderer::LoadTextureFromFile()
 {
-	String* file = &(*EditorUI->OpenFileDialog(Display->GetWindow()));
-	EditorUI->SetFileRetrieved(file);
+	EditorUI.OpenFileDialog(Display.GetWindow());
 
-	std::shared_ptr<CTexture> texture = TextureLoader.LoadTextureData(*EditorUI->GetFileDialogResult());
+	std::shared_ptr<CTexture> texture = TextureLoader.LoadTextureData(EditorUI.GetFileDialogResult());
 
 	if (TextureLoader.TextureMap.RetrieveListSize() > 1)
 	{
@@ -91,14 +83,14 @@ void CRenderer::LoadTextureFromFile()
 
 void CRenderer::Interface()
 {
-	EditorUI->UIBegin("Rendering Stuff");
+	EditorUI.UIBegin("Rendering Stuff");
 
-	if (EditorUI->UIButton("Select new texture"))
+	if (EditorUI.UIButton("Select new texture"))
 	{
 		LoadTextureFromFile();
 	}
 
-	EditorUI->UIEnd();
+	EditorUI.UIEnd();
 }
 
 void CRenderer::Render(CMesh* mesh)
@@ -133,11 +125,6 @@ void CRenderer::SetIsWireframeEnabled(bool Value)
 	isWireframeEnabled = Value;
 }
 
-void CRenderer::SetUI(CEngineUI* UI)
-{
-	this->EditorUI = UI;
-}
-
 CShaderProgram* CRenderer::GetShaderProgram()
 {
 	return &ShaderProgram;
@@ -148,7 +135,7 @@ SMeshData* CRenderer::GetMeshData()
 	return MeshData;
 }
 
-CLoader* CRenderer::GetLoader()
+CLoader& CRenderer::GetLoader()
 {
 	return Loader;
 }

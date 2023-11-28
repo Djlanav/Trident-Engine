@@ -11,13 +11,10 @@ class CTextureLoader;
 class CBufferedReader;
 class CMesh;
 class CUI;
-class CEngineUI;
+class CEditorUI;
 class CDisplay;
 struct SMeshData;
 // ** End **
-
-// ** Function Pointer **
-typedef String* (*func_ptr_one_arg)(CEngineUI* UI);
 
 class CRenderer : public CModule
 {
@@ -27,9 +24,9 @@ private:
 private:
 	bool isWireframeEnabled;
 
-	CEngineUI* EditorUI;
+	CEditorUI& EditorUI;
 
-	CLoader* Loader;
+	CLoader& Loader;
 	CShaderProgram ShaderProgram;
 
 	CTextureLoader TextureLoader;
@@ -40,39 +37,33 @@ private:
 	String* VertexShaderCode;
 	String* FragmentShaderCode;
 
-	CDisplay* Display;
+	CDisplay& Display;
 
 	CShader VertexShader;
 	CShader FragmentShader;
 
-private:
-	func_ptr_one_arg getFDResult;
-
 public:
-	CRenderer(CDisplay* Display, CLoader* Loader);
+	CRenderer(CDisplay& Display, CLoader& Loader, CEditorUI& UI);
 
 	void ClearScreen();
 
 	void InitializeMeshData();
 	void InitializeShaders();
-	void InitializeTextures();
-
-	void GetFunctionPointers();
 
 	// Separate into two functions ^^
 
 	void LoadTextureFromFile();
-	void LoadTextureFromList();
 
 	void Render(CMesh* mesh);
 	void Interface();
 
 	bool GetIsWireframeEnabled();
 	void SetIsWireframeEnabled(bool Value);
-	void SetUI(CEngineUI* UI);
 
 	CShaderProgram* GetShaderProgram();
-	CLoader* GetLoader();
+	
+	CLoader& GetLoader();
+	
 	CShader* GetShader(uint32 GLBasedShader);
 	SMeshData* GetMeshData();
 	CTextureLoader* GetTextureLoader();

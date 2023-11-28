@@ -11,20 +11,12 @@
 #include "Core/Texturing.h"
 #include "Core/FileIO.h"
 #include "Plugins/Logger.h"
-#include "Core/MainEngineUI.h"
+#include "Core/EditorUI.h"
 #include "Core/Display.h"
 #include "Core/Rendering.h"
 #include "Core/Engine.h"
 
-void CEngine::GetFunctionPointers()
-{
-	GetDLL("Editor UI DLL", L"EngineUI.dll", UIDLL);
-	LoadDLLs();
-
-	createEngineUI = (func_ptr_empty_ui_ret)GetProcAddress(*GetDLLHandle("Editor UI DLL"), "createUI");
-}
-
-void CEngine::InitializeCoreModules(CRenderer* Renderer, CDisplay* Display)
+void CEngine::InitializeCoreModules(CRenderer& Renderer, CDisplay& Display)
 {
 	EngineRenderer = Renderer;
 	EngineDisplay = Display;
@@ -36,10 +28,8 @@ void CEngine::InitializeCoreModules(CRenderer* Renderer, CDisplay* Display)
 void CEngine::InitCore(CRenderer* Renderer, CDisplay* Display)
 {
 	InitializeCoreModules(Renderer, Display);
-	GetFunctionPointers();
 
 	EngineDisplay->CreateDisplay();
-	EditorUI = createEngineUI();
 
 	EngineRenderer->SetIsWireframeEnabled(false);
 	EngineRenderer->SetUI(EditorUI);
@@ -51,15 +41,9 @@ void CEngine::InitCore(CRenderer* Renderer, CDisplay* Display)
 	// EngineRenderer->InitializeTextures();
 }
 
-CEngineUI* CEngine::GetEditorUIPtr()
-{
-	return EditorUI;
-}
-
-void CEngine::MakeUIFloats(CEngineUI* UI)
+void CEngine::MakeUIFloats(CEditorUI* UI)
 {
 	UI->InitializeIMGUI(EngineDisplay->GetWindow());
-	EditorUI->SetFloatUIElements(new FPMap);
 
 	float* color = new float[4];
 	color[0] = 0.4f;
@@ -92,7 +76,7 @@ void CEngine::ProccessInput(GLFWwindow* Window)
 	}
 }
 
-void CEngine::Update(CEngineUI* UI)
+void CEngine::Update(CEditorUI* UI)
 {
 	float* color = FloatPointerContainer.GetDataFromBuffer("ColorData");
 
@@ -116,7 +100,7 @@ void CEngine::Update(CEngineUI* UI)
 	EngineShaderProgram->StopShaderProgram();
 }
 
-void CEngine::Close(CEngineUI* UI)
+void CEngine::Close(CEditorUI* UI)
 {
 	EngineRenderer->GetShaderProgram()->CleanShaderProgram();
 	EngineLoader->CleanUp();

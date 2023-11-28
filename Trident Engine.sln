@@ -5,8 +5,6 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Trident Engine", "Trident Engine\Trident Engine.vcxproj", "{C3AF8163-30FD-4FFA-94D3-EB9357A30D49}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineUI", "EngineUI\EngineUI.vcxproj", "{91FB8E9A-160E-4174-A77C-998ED64F1F94}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,14 +21,6 @@ Global
 		{C3AF8163-30FD-4FFA-94D3-EB9357A30D49}.Release|x64.Build.0 = Release|x64
 		{C3AF8163-30FD-4FFA-94D3-EB9357A30D49}.Release|x86.ActiveCfg = Release|Win32
 		{C3AF8163-30FD-4FFA-94D3-EB9357A30D49}.Release|x86.Build.0 = Release|Win32
-		{91FB8E9A-160E-4174-A77C-998ED64F1F94}.Debug|x64.ActiveCfg = Debug|x64
-		{91FB8E9A-160E-4174-A77C-998ED64F1F94}.Debug|x64.Build.0 = Debug|x64
-		{91FB8E9A-160E-4174-A77C-998ED64F1F94}.Debug|x86.ActiveCfg = Debug|Win32
-		{91FB8E9A-160E-4174-A77C-998ED64F1F94}.Debug|x86.Build.0 = Debug|Win32
-		{91FB8E9A-160E-4174-A77C-998ED64F1F94}.Release|x64.ActiveCfg = Release|x64
-		{91FB8E9A-160E-4174-A77C-998ED64F1F94}.Release|x64.Build.0 = Release|x64
-		{91FB8E9A-160E-4174-A77C-998ED64F1F94}.Release|x86.ActiveCfg = Release|Win32
-		{91FB8E9A-160E-4174-A77C-998ED64F1F94}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

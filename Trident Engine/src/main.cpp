@@ -11,31 +11,33 @@
 #include "Core/Texturing.h"
 #include "Core/FileIO.h"
 #include "Plugins/Logger.h"
-#include "Core/MainEngineUI.h"
+#include "Core/EditorUI.h"
 #include "Core/Rendering.h"
 #include "Core/Display.h"
 #include "Core/Engine.h"
 
 int main()
 {
+	CEditorUI EditorUI;
 	CLoader Loader;
 	CDisplay Display("Trident Engine (OpenGL 4.5)", 1024, 780);
-	CRenderer Renderer(&Display, &Loader);
+
+	CRenderer Renderer(Display, Loader, EditorUI);
 
 	CEngine TridentEngine;
-	TridentEngine.InitCore(&Renderer, &Display);
+	TridentEngine.InitCore(Renderer, Display);
 
-	TridentEngine.MakeUIFloats(TridentEngine.GetEditorUIPtr());
+	TridentEngine.MakeUIFloats(&EditorUI);
 
 	while (!glfwWindowShouldClose(Display.GetWindow()))
 	{
-		TridentEngine.Update(TridentEngine.GetEditorUIPtr());
+		TridentEngine.Update(&EditorUI);
 
 		glfwSwapBuffers(Display.GetWindow());
 		glfwPollEvents();
 	}
 
-	TridentEngine.Close(TridentEngine.GetEditorUIPtr());
+	TridentEngine.Close(&EditorUI);
 
 	glfwTerminate();
 	return 0;

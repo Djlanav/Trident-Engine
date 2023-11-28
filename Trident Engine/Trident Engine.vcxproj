@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>TR_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)EngineUI\headers\Core\;$(SolutionDir)EngineUI\headers;$(ProjectDir)src\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\headers\ImGUI;$(ProjectDir)src\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeaderFile>Core/CommonHeaders.h</PrecompiledHeaderFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClInclude Include="src\headers\Core\CommonHeaders.h" />
     <ClInclude Include="src\headers\Core\Display.h" />
+    <ClInclude Include="src\headers\Core\EditorUI.h" />
     <ClInclude Include="src\headers\Core\Engine.h" />
     <ClInclude Include="src\headers\Core\FileIO.h" />
     <ClInclude Include="src\headers\Core\Loader.h" />
@@ -152,6 +153,15 @@
     <ClInclude Include="src\headers\glad\glad.h" />
     <ClInclude Include="src\headers\GLFW\glfw3.h" />
     <ClInclude Include="src\headers\GLFW\glfw3native.h" />
+    <ClInclude Include="src\headers\ImGUI\imconfig.h" />
+    <ClInclude Include="src\headers\ImGUI\imgui.h" />
+    <ClInclude Include="src\headers\ImGUI\imgui_impl_glfw.h" />
+    <ClInclude Include="src\headers\ImGUI\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\headers\ImGUI\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\headers\ImGUI\imgui_internal.h" />
+    <ClInclude Include="src\headers\ImGUI\imstb_rectpack.h" />
+    <ClInclude Include="src\headers\ImGUI\imstb_textedit.h" />
+    <ClInclude Include="src\headers\ImGUI\imstb_truetype.h" />
     <ClInclude Include="src\headers\KHR\khrplatform.h" />
     <ClInclude Include="src\headers\Plugins\color.hpp" />
     <ClInclude Include="src\headers\Plugins\Logger.h" />
@@ -164,9 +174,31 @@
       </PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="src\Display.cpp" />
+    <ClCompile Include="src\EditorUI.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\FileIO.cpp" />
     <ClCompile Include="src\glad.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ImGuiSrc\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ImGuiSrc\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ImGuiSrc\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ImGuiSrc\imgui_impl_glfw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ImGuiSrc\imgui_impl_opengl3.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ImGuiSrc\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ImGuiSrc\imgui_widgets.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Loader.cpp" />

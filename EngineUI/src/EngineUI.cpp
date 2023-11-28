@@ -67,7 +67,7 @@ void CEngineUI::AddIntegerUIElement(const String& Name, uint32* Element)
 	UnsignedIntegerUIElements->insert({ Name, Element });
 }
 
-String* CEngineUI::OpenFileDialog(GLFWwindow* window)
+std::unique_ptr<String> CEngineUI::OpenFileDialog(GLFWwindow* window)
 {
 	OPENFILENAMEA ofn;
 	auto* ofnptr = &ofn;
@@ -87,21 +87,18 @@ String* CEngineUI::OpenFileDialog(GLFWwindow* window)
 
 	if (GetOpenFileNameA(&ofn) == TRUE)
 	{
-		String* fileName = nullptr;
+		std::unique_ptr<String> fileName(nullptr);
 
-		if (FileRetrieved == nullptr)
+		if (FileRetrieved->get() == nullptr)
 		{
-			fileName = new String;
+			fileName = std::make_unique<String>();
 			*fileName = ofn.lpstrFile;
 			
 			return fileName;
 		}
-		else if (FileRetrieved != nullptr)
+		else if (FileRetrieved->get() != nullptr)
 		{
-			delete FileRetrieved;
-
-			fileName = new String;
-			*fileName = ofn.lpstrFile;
+			fileName.reset(new String(ofn.lpstrFile));
 
 			return fileName;
 		}
@@ -110,14 +107,14 @@ String* CEngineUI::OpenFileDialog(GLFWwindow* window)
 	return nullptr;
 }
 
-void CEngineUI::SetFileRetrieved(String* retrieved)
+void CEngineUI::SetFileRetrieved(std::unique_ptr<String> retrieved)
 {
-	this->FileRetrieved = retrieved;
+	FileRetrieved = &std::move(retrieved);
 }
 
-String* CEngineUI::GetFileDialogResult()
+std::unique_ptr<String> CEngineUI::GetFileDialogResult()
 {
-	return FileRetrieved;
+	return std::move(FileRetrieved);
 }
 
 void CEngineUI::UIBegin(const String& WindowName)
@@ -164,6 +161,6 @@ extern "C"
 {
 	ENGINEUI_API CEngineUI* createUI()
 	{
-		return new CEngineUI;
+		return new CEngineUI();
 	}
 }
