@@ -33,7 +33,7 @@ private:
 	VBOVector VertexBufferObjects;
 
 public:
-	CMesh* LoadMeshFromVao(SMeshData* MeshData);
+	std::shared_ptr<CMesh> LoadMeshFromVao(std::shared_ptr<SMeshData> MeshData);
 
 	uint32 CreateVAO();
 

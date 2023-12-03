@@ -24,26 +24,26 @@ private:
 private:
 	bool isWireframeEnabled;
 
-	CEditorUI& EditorUI;
+	std::unique_ptr<CLoader> Loader;
 
-	CLoader& Loader;
+	std::shared_ptr<CEditorUI> EditorUI;
+	std::shared_ptr<SMeshData> MeshData;
+	std::shared_ptr<CDisplay> Display;
+
 	CShaderProgram ShaderProgram;
 
 	CTextureLoader TextureLoader;
 	CBufferedReader BufferedReader;
 
-	SMeshData* MeshData;
+	CShader VertexShader;
+	CShader FragmentShader;
 
 	String* VertexShaderCode;
 	String* FragmentShaderCode;
 
-	CDisplay& Display;
-
-	CShader VertexShader;
-	CShader FragmentShader;
-
 public:
-	CRenderer(CDisplay& Display, CLoader& Loader, CEditorUI& UI);
+	CRenderer();
+	CRenderer(std::shared_ptr<CDisplay> Display, std::unique_ptr<CLoader> Loader, std::shared_ptr<CEditorUI> UI);
 
 	void ClearScreen();
 
@@ -60,11 +60,12 @@ public:
 	bool GetIsWireframeEnabled();
 	void SetIsWireframeEnabled(bool Value);
 
-	CShaderProgram* GetShaderProgram();
-	
+	CShaderProgram& GetShaderProgram();
+	CShader& GetShader(uint32 GLBasedShader);
+
 	CLoader& GetLoader();
-	
-	CShader* GetShader(uint32 GLBasedShader);
-	SMeshData* GetMeshData();
-	CTextureLoader* GetTextureLoader();
+	std::shared_ptr<SMeshData> GetMeshData();
+
+
+	CTextureLoader& GetTextureLoader();
 };

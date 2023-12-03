@@ -16,43 +16,44 @@
 #include "Core/Rendering.h"
 #include "Core/Engine.h"
 
-void CEngine::InitializeCoreModules(CRenderer& Renderer, CDisplay& Display)
+CEngine::CEngine()
+	: EngineLoader(EngineRenderer.GetLoader()), EngineShaderProgram(EngineRenderer.GetShaderProgram())
 {
-	EngineRenderer = Renderer;
-	EngineDisplay = Display;
-
-	EngineLoader = EngineRenderer->GetLoader();
-	EngineShaderProgram = EngineRenderer->GetShaderProgram();
+	EngineRenderer.InitializeShaders();
 }
 
-void CEngine::InitCore(CRenderer* Renderer, CDisplay* Display)
+void CEngine::InitializeCoreModules(std::unique_ptr<CRenderer> Renderer, std::unique_ptr<CDisplay> Display)
 {
-	InitializeCoreModules(Renderer, Display);
-
-	EngineDisplay->CreateDisplay();
-
-	EngineRenderer->SetIsWireframeEnabled(false);
-	EngineRenderer->SetUI(EditorUI);
-	EngineRenderer->InitializeMeshData();
-
-	EngineMesh = EngineRenderer->GetLoader()->LoadMeshFromVao(EngineRenderer->GetMeshData());
-
-	EngineRenderer->InitializeShaders();
-	// EngineRenderer->InitializeTextures();
+	EngineLoader = EngineRenderer.GetLoader();
+	EngineShaderProgram = EngineRenderer.GetShaderProgram();
 }
 
-void CEngine::MakeUIFloats(CEditorUI* UI)
+void CEngine::InitCore(std::unique_ptr<CRenderer> Renderer, std::unique_ptr<CDisplay> Display)
 {
-	UI->InitializeIMGUI(EngineDisplay->GetWindow());
+	InitializeCoreModules(std::move(Renderer), std::move(Display));
 
-	float* color = new float[4];
+	EngineDisplay.CreateDisplay();
+
+	EngineRenderer.SetIsWireframeEnabled(false);
+	EngineRenderer.InitializeMeshData();
+
+	EngineMesh = EngineLoader.LoadMeshFromVao(EngineRenderer.GetMeshData());
+
+	EngineRenderer.InitializeShaders();
+}
+
+void CEngine::MakeUIFloats()
+{
+	EditorUI.InitializeIMGUI(EngineDisplay.GetWindow());
+
+	std::unique_ptr<float[]> color(new float[4]);
 	color[0] = 0.4f;
 	color[1] = 0.6f;
 	color[2] = 0.3f;
 	color[3] = 1.0f;
 
 	FloatPointerContainer.AddToBuffer("ColorData", color);
-	EditorUI->AddFloatUIElement("Color", color);
+	EditorUI.AddFloatUIElement("Color", color);
 }
 
 TUIDataContainer<float*>* CEngine::GetFloatPointerContainer()
@@ -68,45 +69,44 @@ void CEngine::ProccessInput(GLFWwindow* Window)
 	}
 	else if (glfwGetKey(Window, GLFW_KEY_R) == GLFW_PRESS)
 	{
-		EngineRenderer->SetIsWireframeEnabled(true);
+		EngineRenderer.SetIsWireframeEnabled(true);
 	}
 	else if (glfwGetKey(Window, GLFW_KEY_T) == GLFW_PRESS)
 	{
-		EngineRenderer->SetIsWireframeEnabled(false);
+		EngineRenderer.SetIsWireframeEnabled(false);
 	}
 }
 
-void CEngine::Update(CEditorUI* UI)
+void CEngine::Update()
 {
 	float* color = FloatPointerContainer.GetDataFromBuffer("ColorData");
 
-	ProccessInput(EngineDisplay->GetWindow());
+	ProccessInput(EngineDisplay.GetWindow());
 
-	UI->CreateUIFrame();
-	EngineRenderer->ClearScreen();
+	EditorUI.CreateUIFrame();
+	EngineRenderer.ClearScreen();
 
-	EngineShaderProgram->StartShaderProgram();
-	EngineShaderProgram->SetFourVectorUniform("uniform_color",
+	EngineShaderProgram.StartShaderProgram();
+	EngineShaderProgram.SetFourVectorUniform("uniform_color",
 			color[0],
 			color[1],
 			color[2],
 			color[3]
 		);
 	
-	EngineRenderer->Render(EngineMesh);
-	EngineRenderer->Interface();
-	UI->Render();
+	EngineRenderer.Render(EngineMesh);
+	EngineRenderer.Interface();
+	EditorUI.Render();
 
-	EngineShaderProgram->StopShaderProgram();
+	EngineShaderProgram.StopShaderProgram();
 }
 
-void CEngine::Close(CEditorUI* UI)
+void CEngine::Close()
 {
-	EngineRenderer->GetShaderProgram()->CleanShaderProgram();
-	EngineLoader->CleanUp();
+	EngineRenderer.GetShaderProgram().CleanShaderProgram();
+	EngineLoader.CleanUp();
 
-	UI->CleanUpUI();
-	delete UI;
+	EditorUI.CleanUpUI();
 
 	// Free All DLLs
 	FreeAll();

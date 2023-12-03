@@ -13,14 +13,14 @@
 #include "Plugins/Logger.h"
 #include "Core/Rendering.h"
 
-CMesh* CLoader::LoadMeshFromVao(SMeshData* MeshData)
+std::shared_ptr<CMesh> CLoader::LoadMeshFromVao(std::shared_ptr<SMeshData> MeshData)
 {
 	uint32 vao = CreateVAO();
 
 	CreateVBO(&MeshData->PositionData, 3, 6 * sizeof(float), (void*)0);
 	CreateEBO(&MeshData->Indicies);
 
-	CMesh* Mesh = new CMesh(vao, MeshData->Indicies.size());
+	std::shared_ptr<CMesh> Mesh = std::make_shared<CMesh>(vao, MeshData->Indicies.size());
 	return Mesh;
 }
 

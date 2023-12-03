@@ -20,9 +20,10 @@
 #include "Core/Engine.h"
 #include "Core/Rendering.h"
 
-CRenderer::CRenderer(CDisplay& Display, CLoader& Loader, CEditorUI& UI)
+CRenderer::CRenderer(std::shared_ptr<CDisplay> Display, std::unique_ptr<CLoader> Loader, std::shared_ptr<CEditorUI> UI)
 	: ShaderProgram(), TextureLoader(), VertexShader(), FragmentShader(),
-	FragmentShaderCode(), VertexShaderCode(), MeshData(nullptr), isWireframeEnabled(false), Display(Display), Loader(Loader), EditorUI(UI)
+	FragmentShaderCode(), VertexShaderCode(), MeshData(nullptr), isWireframeEnabled(false),
+	Display(Display), Loader(std::move(Loader)), EditorUI(UI)
 {
 }
 
@@ -48,7 +49,7 @@ void CRenderer::InitializeMeshData()
 		3, 1, 2
 	};
 
-	SMeshData* meshData = new SMeshData;
+	std::shared_ptr<SMeshData> meshData = std::make_shared<SMeshData>();
 	meshData->PositionData = positions;
 	meshData->Indicies = indicies;
 
@@ -69,9 +70,9 @@ void CRenderer::InitializeShaders()
 
 void CRenderer::LoadTextureFromFile()
 {
-	EditorUI.OpenFileDialog(Display.GetWindow());
+	EditorUI->OpenFileDialog(Display->GetWindow());
 
-	std::shared_ptr<CTexture> texture = TextureLoader.LoadTextureData(EditorUI.GetFileDialogResult());
+	std::shared_ptr<CTexture> texture = TextureLoader.LoadTextureData(EditorUI->GetFileDialogResult());
 
 	if (TextureLoader.TextureMap.RetrieveListSize() > 1)
 	{
@@ -83,14 +84,14 @@ void CRenderer::LoadTextureFromFile()
 
 void CRenderer::Interface()
 {
-	EditorUI.UIBegin("Rendering Stuff");
+	EditorUI->UIBegin("Rendering Stuff");
 
-	if (EditorUI.UIButton("Select new texture"))
+	if (EditorUI->UIButton("Select new texture"))
 	{
 		LoadTextureFromFile();
 	}
 
-	EditorUI.UIEnd();
+	EditorUI->UIEnd();
 }
 
 void CRenderer::Render(CMesh* mesh)
@@ -125,12 +126,12 @@ void CRenderer::SetIsWireframeEnabled(bool Value)
 	isWireframeEnabled = Value;
 }
 
-CShaderProgram* CRenderer::GetShaderProgram()
+CShaderProgram& CRenderer::GetShaderProgram()
 {
-	return &ShaderProgram;
+	return ShaderProgram;
 }
 
-SMeshData* CRenderer::GetMeshData()
+std::shared_ptr<SMeshData> CRenderer::GetMeshData()
 {
 	return MeshData;
 }
@@ -140,23 +141,19 @@ CLoader& CRenderer::GetLoader()
 	return Loader;
 }
 
-CShader* CRenderer::GetShader(uint32 GLBasedShader)
+CShader& CRenderer::GetShader(uint32 GLBasedShader)
 {
 	if (GLBasedShader == GL_VERTEX_SHADER)
 	{
-		return &VertexShader;
+		return VertexShader;
 	}
 	else if (GLBasedShader == GL_FRAGMENT_SHADER)
 	{
-		return &FragmentShader;
-	}
-	else
-	{
-		return nullptr;
+		return FragmentShader;
 	}
 }
 
-CTextureLoader* CRenderer::GetTextureLoader()
+CTextureLoader& CRenderer::GetTextureLoader()
 {
-	return &TextureLoader;
+	return TextureLoader;
 }
