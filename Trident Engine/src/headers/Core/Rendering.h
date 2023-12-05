@@ -64,6 +64,7 @@ public:
 	std::optional<CShader> GetShader(uint32 GLBasedShader);
 
 	CLoader& GetLoader();
+	CDisplay& GetDisplay();
 	std::shared_ptr<SMeshData> GetMeshData();
 
 

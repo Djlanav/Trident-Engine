@@ -18,7 +18,7 @@ private:
 
 	CRenderer& EngineRenderer;
 	
-	CDisplay EngineDisplay;
+	CDisplay& EngineDisplay;
 	
 	CLoader& EngineLoader;
 	CShaderProgram& EngineShaderProgram;

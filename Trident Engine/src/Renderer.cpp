@@ -156,6 +156,11 @@ std::optional<CShader> CRenderer::GetShader(uint32 GLBasedShader)
 	}
 }
 
+CDisplay& CRenderer::GetDisplay()
+{
+	return Display;
+}
+
 CTextureLoader& CRenderer::GetTextureLoader()
 {
 	return TextureLoader;

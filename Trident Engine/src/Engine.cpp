@@ -17,7 +17,8 @@
 #include "Core/Engine.h"
 
 CEngine::CEngine(CRenderer& Renderer)
-	: EngineRenderer(Renderer), EngineLoader(EngineRenderer.GetLoader()), EngineShaderProgram(EngineRenderer.GetShaderProgram())
+	: EngineRenderer(Renderer), EngineLoader(EngineRenderer.GetLoader()), EngineShaderProgram(EngineRenderer.GetShaderProgram()),
+	EngineDisplay(Renderer.GetDisplay())
 {
 	EngineDisplay.CreateDisplay();
 
