@@ -50,8 +50,15 @@ void CModule::FreeDLL(const String& Name)
 
 void CModule::FreeAll()
 {
-	for (auto& name : DLLNameRefs)
+	if (!DLLNameRefs.empty())
 	{
-		FreeLibrary(DLLMap.at(DLLNameRefs.at(name.first)));
+		for (auto& name : DLLNameRefs)
+		{
+			FreeLibrary(DLLMap.at(DLLNameRefs.at(name.first)));
+		}
+	}
+	else
+	{
+		return;
 	}
 }
