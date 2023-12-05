@@ -21,9 +21,9 @@ struct SMeshData
 	IVector Indicies;
 };
 
-// ** Custom Typedefs **
-typedef std::vector<SVertexAttribPointer*> VAPVector;
-typedef std::vector<CVertexBufferObject*> VBOVector;
+// Using statements
+using VAPVector = std::vector<std::unique_ptr<SVertexAttribPointer>>;
+using VBOVector = std::vector<std::unique_ptr<CVertexBufferObject>>;
 
 // ** Classes **
 
@@ -37,8 +37,8 @@ public:
 
 	uint32 CreateVAO();
 
-	void CreateVBO(FVector* DataForBuffer, int32 AttributeSize, int32 SpaceBetweenAttributes, const_voidptr Offset);
-	void CreateEBO(IVector* IndiciesBufferData); // Indicies
+	void CreateVBO(FVector& DataForBuffer, int32 AttributeSize, int32 SpaceBetweenAttributes, const_voidptr Offset);
+	void CreateEBO(IVector& IndiciesBufferData); // Indicies
 
 	void CleanUp();
 };
@@ -48,22 +48,23 @@ class CVertexBufferObject
 private:
 	uint32 VboID;
 
-	FVector* Data;
+	FVector& Data;
 	VAPVector AttributePointers;
 
 	const_voidptr Offset;
 
 public:
-	CVertexBufferObject(FVector* Data);
+	CVertexBufferObject(FVector& Data);
 
 public:
 	void AddNewVertexAttribPointer(int32 LocationIndex, int32 AttributeSize, int32 Stride, const_voidptr Offset);
-	void BindVertexAttribPointer(SVertexAttribPointer* VertexAttribPointer);
+	void BindVertexAttribPointer(uint32 Index);
 
 	void UnbindBuffer();
 
-	VAPVector* GetAttributePointersVector();
+	VAPVector& GetAttributePointersVector();
 
 	uint32 GetVboID();
-	uint32* GetVboIDAsPointer();
+	uint32& GetVboIDAsReference();
+	uint32* GetVboIDAsRawPointer();
 };

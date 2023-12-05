@@ -16,27 +16,12 @@
 #include "Core/Rendering.h"
 #include "Core/Engine.h"
 
-CEngine::CEngine()
-	: EngineLoader(EngineRenderer.GetLoader()), EngineShaderProgram(EngineRenderer.GetShaderProgram())
+CEngine::CEngine(CRenderer& Renderer)
+	: EngineRenderer(Renderer), EngineLoader(EngineRenderer.GetLoader()), EngineShaderProgram(EngineRenderer.GetShaderProgram())
 {
-	EngineRenderer.InitializeShaders();
-}
-
-void CEngine::InitializeCoreModules(std::unique_ptr<CRenderer> Renderer, std::unique_ptr<CDisplay> Display)
-{
-	EngineLoader = EngineRenderer.GetLoader();
-	EngineShaderProgram = EngineRenderer.GetShaderProgram();
-}
-
-void CEngine::InitCore(std::unique_ptr<CRenderer> Renderer, std::unique_ptr<CDisplay> Display)
-{
-	InitializeCoreModules(std::move(Renderer), std::move(Display));
-
 	EngineDisplay.CreateDisplay();
 
-	EngineRenderer.SetIsWireframeEnabled(false);
 	EngineRenderer.InitializeMeshData();
-
 	EngineMesh = EngineLoader.LoadMeshFromVao(EngineRenderer.GetMeshData());
 
 	EngineRenderer.InitializeShaders();
@@ -46,7 +31,7 @@ void CEngine::MakeUIFloats()
 {
 	EditorUI.InitializeIMGUI(EngineDisplay.GetWindow());
 
-	std::unique_ptr<float[]> color(new float[4]);
+	std::shared_ptr<float[]> color(new float[4]);
 	color[0] = 0.4f;
 	color[1] = 0.6f;
 	color[2] = 0.3f;
@@ -56,9 +41,9 @@ void CEngine::MakeUIFloats()
 	EditorUI.AddFloatUIElement("Color", color);
 }
 
-TUIDataContainer<float*>* CEngine::GetFloatPointerContainer()
+TUIDataContainer<std::shared_ptr<float[]>>& CEngine::GetFloatPointerContainer()
 {
-	return &FloatPointerContainer;
+	return FloatPointerContainer;
 }
 
 void CEngine::ProccessInput(GLFWwindow* Window)
@@ -79,7 +64,7 @@ void CEngine::ProccessInput(GLFWwindow* Window)
 
 void CEngine::Update()
 {
-	float* color = FloatPointerContainer.GetDataFromBuffer("ColorData");
+	std::shared_ptr<float[]> color = FloatPointerContainer.GetDataFromBuffer("ColorData");
 
 	ProccessInput(EngineDisplay.GetWindow());
 

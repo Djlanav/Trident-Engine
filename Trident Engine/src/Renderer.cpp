@@ -20,10 +20,9 @@
 #include "Core/Engine.h"
 #include "Core/Rendering.h"
 
-CRenderer::CRenderer(std::shared_ptr<CDisplay> Display, std::unique_ptr<CLoader> Loader, std::shared_ptr<CEditorUI> UI)
-	: ShaderProgram(), TextureLoader(), VertexShader(), FragmentShader(),
-	FragmentShaderCode(), VertexShaderCode(), MeshData(nullptr), isWireframeEnabled(false),
-	Display(Display), Loader(std::move(Loader)), EditorUI(UI)
+CRenderer::CRenderer(CDisplay& Display, CLoader& Loader, CEditorUI& UI)
+	: MeshData(nullptr), isWireframeEnabled(false),
+	Display(Display), Loader(Loader), EditorUI(UI), ShaderProgram(VertexShader, FragmentShader)
 {
 }
 
@@ -64,15 +63,15 @@ void CRenderer::InitializeShaders()
 	FragmentShaderCode = BufferedReader.WriteToBuffer("shaders/fragmentShader.txt");
 	FragmentShader.InitShader(GL_FRAGMENT_SHADER, FragmentShaderCode);
 
-	ShaderProgram.SetShaders(&VertexShader, &FragmentShader);
+	ShaderProgram.SetShaders(VertexShader, FragmentShader);
 	ShaderProgram.CreateShaderProgram();
 }
 
 void CRenderer::LoadTextureFromFile()
 {
-	EditorUI->OpenFileDialog(Display->GetWindow());
+	EditorUI.OpenFileDialog(Display.GetWindow());
 
-	std::shared_ptr<CTexture> texture = TextureLoader.LoadTextureData(EditorUI->GetFileDialogResult());
+	std::shared_ptr<CTexture> texture = TextureLoader.LoadTextureData(EditorUI.GetFileDialogResult());
 
 	if (TextureLoader.TextureMap.RetrieveListSize() > 1)
 	{
@@ -84,17 +83,17 @@ void CRenderer::LoadTextureFromFile()
 
 void CRenderer::Interface()
 {
-	EditorUI->UIBegin("Rendering Stuff");
+	EditorUI.UIBegin("Rendering Stuff");
 
-	if (EditorUI->UIButton("Select new texture"))
+	if (EditorUI.UIButton("Select new texture"))
 	{
 		LoadTextureFromFile();
 	}
 
-	EditorUI->UIEnd();
+	EditorUI.UIEnd();
 }
 
-void CRenderer::Render(CMesh* mesh)
+void CRenderer::Render(std::shared_ptr<CMesh> mesh)
 {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -109,7 +108,7 @@ void CRenderer::Render(CMesh* mesh)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-	glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei)mesh->GetVertexCount(), GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
@@ -141,7 +140,7 @@ CLoader& CRenderer::GetLoader()
 	return Loader;
 }
 
-CShader& CRenderer::GetShader(uint32 GLBasedShader)
+std::optional<CShader> CRenderer::GetShader(uint32 GLBasedShader)
 {
 	if (GLBasedShader == GL_VERTEX_SHADER)
 	{
@@ -150,6 +149,10 @@ CShader& CRenderer::GetShader(uint32 GLBasedShader)
 	else if (GLBasedShader == GL_FRAGMENT_SHADER)
 	{
 		return FragmentShader;
+	}
+	else
+	{
+		return std::nullopt;
 	}
 }
 

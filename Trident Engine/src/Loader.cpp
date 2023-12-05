@@ -13,12 +13,14 @@
 #include "Plugins/Logger.h"
 #include "Core/Rendering.h"
 
+#define BIND_ATTRIB_PTR_LOOPS 3
+
 std::shared_ptr<CMesh> CLoader::LoadMeshFromVao(std::shared_ptr<SMeshData> MeshData)
 {
 	uint32 vao = CreateVAO();
 
-	CreateVBO(&MeshData->PositionData, 3, 6 * sizeof(float), (void*)0);
-	CreateEBO(&MeshData->Indicies);
+	CreateVBO(MeshData->PositionData, 3, 6 * sizeof(float), (void*)0);
+	CreateEBO(MeshData->Indicies);
 
 	std::shared_ptr<CMesh> Mesh = std::make_shared<CMesh>(vao, MeshData->Indicies.size());
 	return Mesh;
@@ -33,75 +35,78 @@ uint32 CLoader::CreateVAO()
 	return vaoID;
 }
 
-void CLoader::CreateVBO(FVector* DataForBuffer, int32 AttributeSize, int32 SpaceBetweenAttributes, const_voidptr Offset)
+void CLoader::CreateVBO(FVector& DataForBuffer, int32 AttributeSize, int32 SpaceBetweenAttributes, const_voidptr Offset)
 {
 	int32 providedStride = 8 * sizeof(float);
 
-	CVertexBufferObject* VBO = new CVertexBufferObject(DataForBuffer);
+	std::unique_ptr<CVertexBufferObject> VBO = std::make_unique<CVertexBufferObject>(DataForBuffer);
 
 	VBO->AddNewVertexAttribPointer(0, 3, providedStride, (const_voidptr)0);
 	VBO->AddNewVertexAttribPointer(1, 3, providedStride, (const_voidptr)(3 * sizeof(float)));
 	VBO->AddNewVertexAttribPointer(2, 2, providedStride, (const_voidptr)(6 * sizeof(float)));
 	
-	VBO->BindVertexAttribPointer(VBO->GetAttributePointersVector()->at(0));
-	VBO->BindVertexAttribPointer(VBO->GetAttributePointersVector()->at(1));
-	VBO->BindVertexAttribPointer(VBO->GetAttributePointersVector()->at(2));
+	for (uint32 i = 0; i < BIND_ATTRIB_PTR_LOOPS; i++)
+	{
+		VBO->BindVertexAttribPointer(i);
+	}
 
 	VBO->UnbindBuffer();
 
-	VertexBufferObjects.push_back(VBO);
+	VertexBufferObjects.push_back(std::move(VBO));
 }
 
-void CLoader::CreateEBO(IVector* IndiciesBufferData)
+void CLoader::CreateEBO(IVector& IndiciesBufferData)
 {
 	uint32 eboID = 0;
 	glGenBuffers(1, &eboID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int32) * IndiciesBufferData->size(), IndiciesBufferData->data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int32) * IndiciesBufferData.size(), IndiciesBufferData.data(), GL_STATIC_DRAW);
 }
 
 void CLoader::CleanUp()
 {
-	for (auto VBO : VertexBufferObjects)
+	for (std::unique_ptr<CVertexBufferObject>& VBO : VertexBufferObjects)
 	{
-		glDeleteBuffers(1, VBO->GetVboIDAsPointer());
-		delete VBO;
+		glDeleteBuffers(1, VBO->GetVboIDAsRawPointer());
 	}
 }
 
 // ** CVertexBufferObject **
-CVertexBufferObject::CVertexBufferObject(FVector* Data) 
-	: Offset(nullptr), AttributePointers()
+CVertexBufferObject::CVertexBufferObject(FVector& Data) 
+	: Data(Data), Offset(nullptr), AttributePointers()
 {
-	this->Data = Data;
 	VboID = 0;
 
 	glGenBuffers(1, &VboID);
 	glBindBuffer(GL_ARRAY_BUFFER, VboID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * Data->size(), Data->data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * Data.size(), Data.data(), GL_STATIC_DRAW);
 }
 
 void CVertexBufferObject::AddNewVertexAttribPointer(int32 LocationIndex, int32 AttributeSize, int32 Stride, const_voidptr Offset)
 {
-	SVertexAttribPointer* attribPointer = new SVertexAttribPointer;
+	std::unique_ptr<SVertexAttribPointer> attribPointer = std::make_unique<SVertexAttribPointer>();
 	attribPointer->LocationIndex = LocationIndex;
 	attribPointer->AttributeSize = AttributeSize;
 	attribPointer->Stride = Stride;
 	attribPointer->Offset = Offset;
 
-	AttributePointers.push_back(attribPointer);
+	AttributePointers.push_back(std::move(attribPointer));
 }
 
-VAPVector* CVertexBufferObject::GetAttributePointersVector()
+VAPVector& CVertexBufferObject::GetAttributePointersVector()
 {
-	return &AttributePointers;
+	return AttributePointers;
 }
 
-void CVertexBufferObject::BindVertexAttribPointer(SVertexAttribPointer* VertexAttribPointer)
+void CVertexBufferObject::BindVertexAttribPointer(uint32 Index)
 {
+	std::unique_ptr<SVertexAttribPointer> VertexAttribPointer = std::move(AttributePointers[Index]);
+
 	glVertexAttribPointer(VertexAttribPointer->LocationIndex,
 		VertexAttribPointer->AttributeSize, GL_FLOAT, GL_FALSE, VertexAttribPointer->Stride,
 		VertexAttribPointer->Offset);
+
+	AttributePointers[Index] = std::move(VertexAttribPointer);
 }
 
 void CVertexBufferObject::UnbindBuffer()
@@ -114,7 +119,12 @@ uint32 CVertexBufferObject::GetVboID()
 	return VboID;
 }
 
-uint32* CVertexBufferObject::GetVboIDAsPointer()
+uint32& CVertexBufferObject::GetVboIDAsReference()
+{
+	return VboID;
+}
+
+uint32* CVertexBufferObject::GetVboIDAsRawPointer()
 {
 	return &VboID;
 }

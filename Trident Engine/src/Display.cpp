@@ -20,7 +20,7 @@ void framebuffer_size_call_back(GLFWwindow* window, int width, int height)
 
 CDisplay::CDisplay() {}
 
-CDisplay::CDisplay(const String& DisplayTitle, int32 DisplayWidth, int32 DisplayHeight)]
+CDisplay::CDisplay(const String& DisplayTitle, int32 DisplayWidth, int32 DisplayHeight)
 	: window(nullptr)
 {
 	ELogStatus glfwStatus;

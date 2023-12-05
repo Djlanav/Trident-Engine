@@ -4,15 +4,15 @@ class CMesh
 {
 private:
 	uint32_t VaoID;
-	uint32_t VertexCount;
+	size_t VertexCount;
 
 public:
 	// ** Constructor **
-	CMesh(uint32_t VaoID, uint32_t VertexCount);
+	CMesh(uint32_t VaoID, size_t VertexCount);
 
 	// ** Getters **
 	uint32_t GetVaoID();
-	uint32_t GetVertexCount();
+	size_t GetVertexCount();
 
 	// ** Setters **
 	void SetVaoID(uint32_t id);

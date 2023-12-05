@@ -9,13 +9,15 @@ class CShaderProgram
 private:
 	uint32 Program;
 
-	CShader* VertexShader;
-	CShader* FragmentShader;
+	CShader& VertexShader;
+	CShader& FragmentShader;
 
 public:
 	I32HashMap UniformLocations;
 
 public:
+	CShaderProgram(CShader& VertexShader, CShader& FragmentShader);
+
 	void CreateShaderProgram();
 	void CheckProgramLinkStatus();
 
@@ -24,7 +26,7 @@ public:
 
 	void CleanShaderProgram();
 
-	void SetShaders(CShader* VertexShader, CShader* FragmentShader);
+	void SetShaders(CShader& VertexShader, CShader& FragmentShader);
 
 	void AddUniformLocation(const String& Name);
 	void GetUniformLocations();

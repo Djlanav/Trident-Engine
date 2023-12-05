@@ -44,12 +44,12 @@ void CEditorUI::CreateUIFrame()
 	ImGui::NewFrame();
 }
 
-void CEditorUI::AddFloatUIElement(const String& Name, float* Element)
+void CEditorUI::AddFloatUIElement(const String& Name, std::shared_ptr<float[]> Element)
 {
 	FloatUIElements.insert({ Name, Element });
 }
 
-void CEditorUI::AddIntegerUIElement(const String& Name, uint32* Element)
+void CEditorUI::AddIntegerUIElement(const String& Name, std::shared_ptr<uint32[]> Element)
 {
 	UnsignedIntegerUIElements.insert({ Name, Element });
 }

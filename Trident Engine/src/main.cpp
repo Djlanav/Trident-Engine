@@ -16,6 +16,7 @@
 #include "Core/Display.h"
 #include "Core/Engine.h"
 
+// Entry point
 int main()
 {
 	CEditorUI EditorUI;
@@ -24,20 +25,19 @@ int main()
 
 	CRenderer Renderer(Display, Loader, EditorUI);
 
-	CEngine TridentEngine;
-	TridentEngine.InitCore(Renderer, Display);
+	CEngine TridentEngine(Renderer);
 
-	TridentEngine.MakeUIFloats(&EditorUI);
+	TridentEngine.MakeUIFloats();
 
 	while (!glfwWindowShouldClose(Display.GetWindow()))
 	{
-		TridentEngine.Update(&EditorUI);
+		TridentEngine.Update();
 
 		glfwSwapBuffers(Display.GetWindow());
 		glfwPollEvents();
 	}
 
-	TridentEngine.Close(&EditorUI);
+	TridentEngine.Close();
 
 	glfwTerminate();
 	return 0;

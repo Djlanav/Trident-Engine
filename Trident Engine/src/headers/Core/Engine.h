@@ -2,10 +2,10 @@
 
 class CModule;
 class CMesh;
-class CRenderer;
 class CDisplay;
 class CLoader;
 class CShaderProgram;
+class CRenderer;
 
 #include "Core/UIDataContainer.h"
 
@@ -15,7 +15,8 @@ class CEngine : public CModule
 {
 private:
 	CEditorUI EditorUI;
-	CRenderer EngineRenderer;
+
+	CRenderer& EngineRenderer;
 	
 	CDisplay EngineDisplay;
 	
@@ -23,21 +24,17 @@ private:
 	CShaderProgram& EngineShaderProgram;
 
 	std::shared_ptr<CMesh> EngineMesh;
-
-	TUIDataContainer<float*> FloatPointerContainer;
+	TUIDataContainer<std::shared_ptr<float[]>> FloatPointerContainer;
 
 private:
 	void ProccessInput(GLFWwindow* Window);
-	void InitializeCoreModules(std::unique_ptr<CRenderer> Renderer, std::unique_ptr<CDisplay> Display);
 
 public:
-	CEngine();
-
-	void InitCore(std::unique_ptr<CRenderer> Renderer, std::unique_ptr<CDisplay> Display);
+	CEngine(CRenderer& Renderer);
 	void Update();
 	void Close();
 
 	void MakeUIFloats();
 
-	TUIDataContainer<float*>* GetFloatPointerContainer();
+	TUIDataContainer<std::shared_ptr<float[]>>& GetFloatPointerContainer();
 };

@@ -1,8 +1,7 @@
 #pragma once
 
-using FPMap = std::unordered_map<String, float*>;
-using UIPMap = std::unordered_map<String, uint32*>;
-
+using FPMap = std::unordered_map<String, std::shared_ptr<float[]>>;
+using UIPMap = std::unordered_map<String, std::shared_ptr<uint32[]>>;
 
 class CEditorUI
 {
@@ -19,8 +18,8 @@ public:
 
 	void CleanUpUI();
 
-	void AddFloatUIElement(const String& Name, float* Element);
-	void AddIntegerUIElement(const String& Name, uint32* Element);
+	void AddFloatUIElement(const String& Name, std::shared_ptr<float[]> Element);
+	void AddIntegerUIElement(const String& Name, std::shared_ptr<uint32[]> Element);
 
 	FPMap& GetFloatUIElements();
 	UIPMap& GetUnsignedUIElements();
