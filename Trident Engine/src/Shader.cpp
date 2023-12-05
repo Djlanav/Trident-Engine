@@ -6,12 +6,16 @@
 #include "Plugins/Logger.h"
 
 // ** CShaderProgram **
+CShaderProgram::CShaderProgram(CShader& VertexShader, CShader& FragmentShader) 
+	: VertexShader(VertexShader), FragmentShader(FragmentShader)
+{}
+
 void CShaderProgram::CreateShaderProgram()
 {
 	Program = glCreateProgram();
 
-	glAttachShader(Program, VertexShader->GetShaderID());
-	glAttachShader(Program, FragmentShader->GetShaderID());
+	glAttachShader(Program, VertexShader.GetShaderID());
+	glAttachShader(Program, FragmentShader.GetShaderID());
 	glLinkProgram(Program);
 
 	CheckProgramLinkStatus();
@@ -56,16 +60,16 @@ void CShaderProgram::StopShaderProgram()
 
 void CShaderProgram::CleanShaderProgram()
 {
-	glDetachShader(Program, VertexShader->GetShaderID());
-	glDetachShader(Program, FragmentShader->GetShaderID());
+	glDetachShader(Program, VertexShader.GetShaderID());
+	glDetachShader(Program, FragmentShader.GetShaderID());
 
-	glDeleteShader(VertexShader->GetShaderID());
-	glDeleteShader(FragmentShader->GetShaderID());
+	glDeleteShader(VertexShader.GetShaderID());
+	glDeleteShader(FragmentShader.GetShaderID());
 
 	glDeleteProgram(Program);
 }
 
-void CShaderProgram::SetShaders(CShader* VertexShader, CShader* FragmentShader)
+void CShaderProgram::SetShaders(CShader& VertexShader, CShader& FragmentShader)
 {
 	this->VertexShader = VertexShader;
 	this->FragmentShader = FragmentShader;

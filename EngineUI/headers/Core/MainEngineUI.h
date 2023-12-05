@@ -12,7 +12,7 @@ class ENGINEUI_API CEngineUI
 private:
 	FPMap* FloatUIElements;
 	UIPMap* UnsignedIntegerUIElements;
-	String* FileRetrieved;
+	std::unique_ptr<String>* FileRetrieved;
 
 public:
 	virtual void InitializeIMGUI(GLFWwindow* window);
@@ -31,9 +31,11 @@ public:
 	virtual void SetFloatUIElements(FPMap* Map);
 	virtual void SetUnsignedUIElements(UIPMap* Map);
 
-	virtual String* OpenFileDialog(GLFWwindow* window);
-	virtual void SetFileRetrieved(String* retrieved);
-	virtual String* GetFileDialogResult();
+	virtual std::unique_ptr<String> OpenFileDialog(GLFWwindow* window);
+
+	virtual void SetFileRetrieved(std::unique_ptr<String> retrieved);
+
+	virtual std::unique_ptr<String> GetFileDialogResult();
 
 public: // ImGUI interfacing
 	virtual void UIBegin(const String& WindowName);

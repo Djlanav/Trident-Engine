@@ -11,4 +11,5 @@
 #include <cstdarg>
 #include <thread>
 #include <memory>
+#include <optional>
 #include <Windows.h>

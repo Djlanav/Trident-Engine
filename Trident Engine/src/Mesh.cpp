@@ -13,7 +13,7 @@
 #include "Core/Rendering.h"
 
 // ** Constructor **
-CMesh::CMesh(uint32_t VaoID, uint32_t VertexCount)
+CMesh::CMesh(uint32_t VaoID, size_t VertexCount)
 {
 	this->VaoID = VaoID;
 	this->VertexCount = VertexCount;
@@ -25,7 +25,7 @@ uint32_t CMesh::GetVaoID()
 	return VaoID;
 }
 
-uint32_t CMesh::GetVertexCount()
+size_t CMesh::GetVertexCount()
 {
 	return VertexCount;
 }

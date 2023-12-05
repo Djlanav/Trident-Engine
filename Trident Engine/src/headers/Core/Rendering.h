@@ -11,13 +11,10 @@ class CTextureLoader;
 class CBufferedReader;
 class CMesh;
 class CUI;
-class CEngineUI;
+class CEditorUI;
 class CDisplay;
 struct SMeshData;
 // ** End **
-
-// ** Function Pointer **
-typedef String* (*func_ptr_one_arg)(CEngineUI* UI);
 
 class CRenderer : public CModule
 {
@@ -27,53 +24,49 @@ private:
 private:
 	bool isWireframeEnabled;
 
-	CEngineUI* EditorUI;
+	CEditorUI& EditorUI;
+	CDisplay& Display;
+	CLoader& Loader;
 
-	CLoader* Loader;
+	std::shared_ptr<SMeshData> MeshData;
+
 	CShaderProgram ShaderProgram;
 
 	CTextureLoader TextureLoader;
 	CBufferedReader BufferedReader;
 
-	SMeshData* MeshData;
+	CShader VertexShader;
+	CShader FragmentShader;
 
 	String* VertexShaderCode;
 	String* FragmentShaderCode;
 
-	CDisplay* Display;
-
-	CShader VertexShader;
-	CShader FragmentShader;
-
-private:
-	func_ptr_one_arg getFDResult;
-
 public:
-	CRenderer(CDisplay* Display, CLoader* Loader);
+	CRenderer();
+	CRenderer(CDisplay& Display, CLoader& Loader, CEditorUI& UI);
 
 	void ClearScreen();
 
 	void InitializeMeshData();
 	void InitializeShaders();
-	void InitializeTextures();
-
-	void GetFunctionPointers();
 
 	// Separate into two functions ^^
 
 	void LoadTextureFromFile();
-	void LoadTextureFromList();
 
-	void Render(CMesh* mesh);
+	void Render(std::shared_ptr<CMesh> mesh);
 	void Interface();
 
 	bool GetIsWireframeEnabled();
 	void SetIsWireframeEnabled(bool Value);
-	void SetUI(CEngineUI* UI);
 
-	CShaderProgram* GetShaderProgram();
-	CLoader* GetLoader();
-	CShader* GetShader(uint32 GLBasedShader);
-	SMeshData* GetMeshData();
-	CTextureLoader* GetTextureLoader();
+	CShaderProgram& GetShaderProgram();
+	std::optional<CShader> GetShader(uint32 GLBasedShader);
+
+	CLoader& GetLoader();
+	CDisplay& GetDisplay();
+	std::shared_ptr<SMeshData> GetMeshData();
+
+
+	CTextureLoader& GetTextureLoader();
 };

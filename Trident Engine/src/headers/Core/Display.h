@@ -16,6 +16,7 @@ private:
 	void SetGlfwHints();
 
 public:
+	CDisplay();
 	CDisplay(const String& DisplayTitle, int32 DisplayWidth, int32 DisplayHeight);
 
 	void CreateDisplay();
